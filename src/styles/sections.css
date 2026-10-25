@@ -190,19 +190,36 @@ main, .footer { position: relative; z-index: 10; }
 .topics__head { display: grid; gap: 10px; margin-bottom: 28px; }
 .topics__title { font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white-cold); }
 .topics__sub { color: var(--text-secondary); font-size: 16px; max-width: 52ch; }
-.topic-map { display: flex; flex-wrap: wrap; gap: 6px 22px; max-width: 980px; }
+.tmap { border-top: 1px solid var(--line); max-width: 1080px; }
+.tmap__row {
+  display: grid;
+  grid-template-columns: 16em minmax(0, 1fr);
+  gap: 10px 32px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.tmap__name { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--phosphor); padding-top: 4px; }
+.tmap dd { margin: 0; min-width: 0; }
+.tmap__tags { display: flex; flex-wrap: wrap; gap: 4px 20px; }
 .topic {
-  position: relative;
-  padding: 6px 0;
+  display: inline-block;
+  padding: 3px 0;
   font-size: 13.5px;
   color: var(--text-primary);
+  text-decoration: none;
   transition: color 0.3s;
 }
 .topic::before { content: '#'; color: var(--phosphor); opacity: 0.55; margin-right: 2px; transition: opacity 0.3s; }
-.topic:hover { color: var(--phosphor); }
-.topic:hover::before { opacity: 1; }
-.topic--explore { color: var(--text-dim); }
-.topic--explore::before { color: var(--text-dim); }
+a.topic:hover, a.topic:focus-visible { color: var(--phosphor); }
+a.topic:hover::before, a.topic:focus-visible::before { opacity: 1; }
+.tmap__src { margin-top: 8px; font-size: 14px; line-height: 1.55; color: var(--text-secondary); max-width: 68ch; }
+.tmap__repo { font-size: 12px; color: var(--text-dim); text-decoration: none; margin-right: 8px; overflow-wrap: anywhere; transition: color 0.3s; }
+.tmap__repo:hover, .tmap__repo:focus-visible { color: var(--phosphor); }
+.tmap__row--shared .tmap__name { color: var(--text-dim); }
+@media (max-width: 760px) {
+  .tmap__row { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 18px 0; }
+  .tmap__repo { display: block; margin: 0 0 4px; }
+}
 .topics__note { margin-top: 24px; font-size: 11px; color: var(--text-dim); }
 
 /* ── Work ──────────────────────────────────────────────────── */

@@ -58,10 +58,26 @@ function renderContent() {
     })
     .join('');
 
-  // Topics: an interest map, not a ranking.
-  $('#topic-map').innerHTML = topics
-    .map((t) => `<li class="topic${t.explore ? ' topic--explore' : ''}">${esc(t.tag)}</li>`)
-    .join('');
+  // Topics: projects I follow, grouped by theme. Not a ranking.
+  const tag = (t, url, repo) =>
+    url
+      ? `<li><a class="topic" href="${esc(url)}" target="_blank" rel="noopener" aria-label="${esc(t)}, see ${esc(repo)} on GitHub">${esc(t)}</a></li>`
+      : `<li><span class="topic">${esc(t)}</span></li>`;
+  $('#topic-map').innerHTML =
+    topics.themes
+      .map(
+        (th) => `<div class="tmap__row reveal">
+        <dt class="tmap__name mono">${esc(th.name)}</dt>
+        <dd>
+          <ul class="tmap__tags mono">${th.tags.map((t) => tag(t, th.url, th.repo)).join('')}</ul>
+          <p class="tmap__src"><a class="tmap__repo mono" href="${esc(th.url)}" target="_blank" rel="noopener">${esc(th.repo)}<span aria-hidden="true"> ↗</span></a> <span class="tmap__about">${esc(th.about)}</span></p>
+        </dd>
+      </div>`
+      )
+      .join('') +
+    (topics.shared.length
+      ? `<div class="tmap__row tmap__row--shared reveal"><dt class="tmap__name mono">Across all</dt><dd><ul class="tmap__tags mono">${topics.shared.map((t) => tag(t)).join('')}</ul></dd></div>`
+      : '');
 
   // Contact
   const cta = $('#contact-cta');

@@ -156,28 +156,41 @@ export const skills = {
   ],
 };
 
-// Topics. My repositories don't carry GitHub topic tags yet, so this is a
-// hand-kept interest map, not a ranking. Edit freely.
-// explore: true marks a topic I'm interested in but haven't built with yet.
-export const topics = [
-  { tag: 'javascript' },
-  { tag: 'typescript' },
-  { tag: 'react' },
-  { tag: 'vite' },
-  { tag: 'tailwindcss' },
-  { tag: 'nodejs' },
-  { tag: 'postgresql' },
-  { tag: 'supabase' },
-  { tag: 'threejs' },
-  { tag: 'webgl' },
-  { tag: 'gsap' },
-  { tag: 'framer-motion' },
-  { tag: 'creative-coding' },
-  { tag: 'ai-tools' },
-  { tag: 'ui-design' },
-  { tag: 'web-development' },
-  { tag: 'nextjs', explore: true },
-  { tag: 'generative-art', explore: true },
-  { tag: 'automation', explore: true },
-  { tag: 'open-source', explore: true },
-];
+// Top GitHub topics: themes I follow and learn from. These are other people's
+// open-source projects, not my own work. Descriptions are paraphrased from each
+// repository's README. Tags link to the repository they come from; a tag with
+// no url stays plain text.
+export const topics = {
+  themes: [
+    {
+      name: 'AI agents & autonomous systems',
+      repo: 'openclaw/openclaw',
+      url: 'https://github.com/openclaw/openclaw',
+      about: 'An open-source AI assistant that runs on your own devices and works inside the chat apps you already use, with swappable models and agent harnesses.',
+      tags: ['ai-agents', 'autonomous-systems'],
+    },
+    {
+      name: 'Multimodal AI & open models',
+      repo: 'QwenLM/Qwen2.5-Omni',
+      url: 'https://github.com/QwenLM/Qwen2.5-Omni',
+      about: 'An end-to-end multimodal model from the Qwen team that takes text, images, audio and video, and answers in text or natural speech.',
+      tags: ['multimodal-ai', 'open-source-models'],
+    },
+    {
+      name: 'Developer tools & AI workflows',
+      repo: 'lbjlaq/Antigravity-Manager',
+      url: 'https://github.com/lbjlaq/Antigravity-Manager',
+      about: 'A desktop app (Tauri, Rust, React) for managing AI service accounts and translating requests between different provider APIs.',
+      tags: ['developer-tools', 'ai-workflows'],
+    },
+    {
+      name: 'Application security & audit automation',
+      repo: 'cloudflare/security-audit-skill',
+      url: 'https://github.com/cloudflare/security-audit-skill',
+      about: "A coding-agent skill from Cloudflare that runs a staged security audit: reconnaissance, hunting, independent validation and verified reporting.",
+      tags: ['security-auditing', 'application-security', 'automation'],
+    },
+  ],
+  // Shared across every theme above, so not tied to one repository.
+  shared: ['open-source'],
+};
