@@ -220,12 +220,12 @@ function initReveals() {
 // Core states per section. Values are fractions; the core module maps them to space.
 const CORE_STATES = {
   top:      { x: 0.42, y: 0.02,  scale: 0.92, distort: 0.17, freq: 1.1,  shell: 0.16, spread: 1.0,  glow: 1.0, opacity: 1.0,  spin: 1.0 },
-  identity: { x: 0.66, y: -0.08, scale: 0.78, distort: 0.18, freq: 2.2,  shell: 0.34, spread: 1.3,  glow: 0.7, opacity: 0.5,  spin: 0.7 },
+  identity: { x: 0.74, y: -0.04, scale: 0.7, distort: 0.18, freq: 2.2,  shell: 0.34, spread: 1.3,  glow: 0.7, opacity: 0.7,  spin: 0.7 },
   skills:   { x: 0.56, y: 0.0,   scale: 1.02, distort: 0.2,  freq: 1.5,  shell: 0.3,  spread: 1.15, glow: 1.0, opacity: 0.95, spin: 0.6 },
   topics:   { x: -0.62, y: 0.04, scale: 0.9,  distort: 0.26, freq: 2.0,  shell: 0.24, spread: 1.4,  glow: 0.85, opacity: 0.8, spin: 0.45 },
   archive:  { x: -0.7, y: 0.25,  scale: 1.35, distort: 0.3,  freq: 1.6,  shell: 0.1,  spread: 1.6,  glow: 0.6, opacity: 0.14, spin: 0.5 },
   lab:      { x: 0.0,  y: 0.0,   scale: 0.62, distort: 0.55, freq: 3.2,  shell: 0.28, spread: 0.85, glow: 1.0, opacity: 0.3,  spin: 1.6 },
-  contact:  { x: 0.38, y: 0.0,   scale: 0.72, distort: 0.08, freq: 1.0,  shell: 0.22, spread: 1.1,  glow: 0.8, opacity: 0.9,  spin: 0.3 },
+  contact:  { x: 0.6,  y: 0.34,  scale: 0.52, distort: 0.08, freq: 1.0,  shell: 0.22, spread: 1.1,  glow: 0.8, opacity: 0.9,  spin: 0.3 },
 };
 
 function initCoreScroll() {

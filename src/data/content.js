@@ -11,7 +11,7 @@ export const identity = {
   // Arabic name, shown in the identity section and the footer.
   nameAr: 'بدر الصقر',
   label: 'Creative technologist / digital explorer',
-  // Portraits live in public/portrait/ (hero-*.{avif,webp,jpg}, about-*.{avif,webp,jpg}).
+  // The About portrait lives in public/portrait/ (about-*.{avif,webp,jpg}).
   // Replace those files with new photos of the same names and sizes to update them.
   // Plain-words location for the clock panel. null hides the line.
   location: null,
