@@ -57,6 +57,14 @@
   <main id="main" tabindex="-1">
     <!-- Hero -->
     <section class="hero" id="top" aria-labelledby="hero-title">
+      <figure class="hero__portrait reveal">
+              <picture>
+                <source type="image/avif" srcset="./portrait/hero-300.avif 300w, ./portrait/hero-450.avif 450w" sizes="150px" />
+                <source type="image/webp" srcset="./portrait/hero-300.webp 300w, ./portrait/hero-450.webp 450w" sizes="150px" />
+                <img src="./portrait/hero-300.jpg" srcset="./portrait/hero-300.jpg 300w, ./portrait/hero-450.jpg 450w" sizes="150px" width="300" height="400" alt="Bader Alsaqr" fetchpriority="low" decoding="async" />
+              </picture>
+      </figure>
+
       <h1 class="hero__title" id="hero-title">
         <span class="hero__line"><span class="hero__word">BADER</span></span>
         <span class="hero__line"><span class="hero__word">ALSAQR</span></span>
@@ -89,14 +97,12 @@
         <div class="record__side">
           <figure class="portrait reveal" id="portrait">
             <div class="portrait__frame">
-              <div class="portrait__empty" id="portrait-empty">
-                <svg viewBox="0 0 120 150" aria-hidden="true" class="portrait__glyph">
-                  <circle cx="60" cy="56" r="24" />
-                  <path d="M18 150c4-30 20-46 42-46s38 16 42 46" />
-                </svg>
-              </div>
+              <picture>
+                <source type="image/avif" srcset="./portrait/about-400.avif 400w, ./portrait/about-800.avif 800w" sizes="220px" />
+                <source type="image/webp" srcset="./portrait/about-400.webp 400w, ./portrait/about-800.webp 800w" sizes="220px" />
+                <img src="./portrait/about-400.jpg" srcset="./portrait/about-400.jpg 400w, ./portrait/about-800.jpg 800w" sizes="220px" width="400" height="500" alt="Black-and-white portrait of Bader Alsaqr wearing a white thobe and a shemagh" loading="lazy" decoding="async" />
+              </picture>
             </div>
-            <figcaption class="portrait__cap mono" id="portrait-state">Portrait pending</figcaption>
           </figure>
         </div>
       </div>

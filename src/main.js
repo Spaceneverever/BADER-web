@@ -45,17 +45,7 @@ function renderContent() {
     )
     .join('');
 
-  if (identity.portrait) {
-    const frame = $('.portrait__frame');
-    const img = new Image();
-    img.alt = `Portrait of ${identity.name}`;
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    img.onload = () => { $('#portrait-empty')?.remove(); $('#portrait-state').textContent = 'ON FILE'; };
-    img.onerror = () => { img.remove(); $('#portrait-state').textContent = 'LOAD FAILED'; };
-    img.src = identity.portrait;
-    frame.prepend(img);
-  }
+
 
   // Contact
   const cta = $('#contact-cta');
