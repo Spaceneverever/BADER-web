@@ -111,23 +111,29 @@
 
     <!-- Skills -->
     <section class="skills section" id="skills" aria-labelledby="skills-title" data-section>
-      <header class="section__head">
-        <p class="section__idx mono">Skills</p>
-        <h2 class="section__title" id="skills-title">TECHNICAL PROFILE</h2>
-        <p class="section__lede">What I work with, taken from my own code. Things I'm still learning are listed separately.</p>
-      </header>
-      <dl class="skillset" id="skillset"></dl>
-      <p class="skills__legend mono reveal"><span class="chip chip--sample">Using</span> appears in my code <span class="chip chip--sample chip--explore">Exploring</span> learning, not yet built with</p>
+      <div class="skills__col">
+        <header class="section__head skills__head">
+          <p class="section__idx mono">Skills</p>
+          <h2 class="section__title" id="skills-title">TECHNICAL<br />PROFILE</h2>
+          <p class="section__lede">What I work with, taken from my own code. Things I'm still learning are set in <em class="skills__em">italic</em>.</p>
+        </header>
+        <div class="skillset" id="skillset"></div>
+        <p class="skills__legend mono reveal"><span><b class="skills__key">Aa</b> in my code</span><span><b class="skills__key skills__key--explore">Aa</b> exploring, not yet built with</span></p>
+      </div>
     </section>
 
     <!-- Top GitHub topics -->
     <section class="topics section" id="topics" aria-labelledby="topics-title">
-      <header class="topics__head">
-        <h2 class="topics__title mono" id="topics-title">Top GitHub topics</h2>
-        <p class="topics__sub">Technologies, tools, and ideas I explore across the open-source ecosystem.</p>
-      </header>
-      <dl class="tmap" id="topic-map"></dl>
-      <p class="topics__note mono reveal">Open-source projects I follow and learn from, not ones I built. Tags open the repository they come from.</p>
+      <div class="topics__col">
+        <header class="topics__head">
+          <p class="section__idx mono">Interests</p>
+          <h2 class="topics__title" id="topics-title">Top GitHub topics</h2>
+          <p class="topics__sub">Technologies, tools, and ideas I explore across the open-source ecosystem.</p>
+        </header>
+        <div class="tblocks" id="topic-map"></div>
+        <p class="topics__shared mono reveal" id="topics-shared"></p>
+        <p class="topics__note mono reveal">Open-source projects I follow and learn from, not ones I built.</p>
+      </div>
     </section>
 
     <!-- 02 Work -->

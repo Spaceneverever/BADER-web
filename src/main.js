@@ -27,6 +27,19 @@ const root = document.documentElement;
 root.classList.toggle('motion-off', reducedMotion.value);
 
 // ── Content from the content file ────────────────────────────
+
+// Small line drawings, one per interest area. Decorative only.
+const MOTIFS = [
+  // agents: a hub linked to three nodes
+  '<svg class="tblock__motif" viewBox="0 0 40 40"><circle cx="20" cy="20" r="3.2"/><circle cx="7" cy="9" r="2"/><circle cx="33" cy="12" r="2"/><circle cx="24" cy="34" r="2"/><path d="M17.4 18 8.6 10.4M23 19l8.2-5.8M21 23.1l2.4 9"/></svg>',
+  // multimodal: overlapping inputs
+  '<svg class="tblock__motif" viewBox="0 0 40 40"><circle cx="15" cy="16" r="8"/><circle cx="25" cy="16" r="8"/><circle cx="20" cy="25" r="8"/></svg>',
+  // dev tools: brackets around a cursor
+  '<svg class="tblock__motif" viewBox="0 0 40 40"><path d="M13 10 5 20l8 10M27 10l8 10-8 10M18 27h6"/></svg>',
+  // appsec: a frame being scanned
+  '<svg class="tblock__motif" viewBox="0 0 40 40"><path d="M6 13V6h7M27 6h7v7M34 27v7h-7M13 34H6v-7"/><path class="tblock__scan" d="M10 20h20"/></svg>',
+];
+
 function renderContent() {
   $('#hero-label').textContent = identity.label;
   // Name: hero lines, top bar, identity heading, footer.
@@ -47,37 +60,36 @@ function renderContent() {
 
 
 
-  // Skills: grouped tags, no levels or ratings.
+  // Skills: editorial groups, no levels or ratings.
+  // Solid words appear in my code; italic serif words are still being explored.
   $('#skillset').innerHTML = skills.groups
-    .map((g) => {
-      const chips = [
-        ...g.using.map((t) => `<li class="chip">${esc(t)}</li>`),
-        ...g.exploring.map((t) => `<li class="chip chip--explore" title="Exploring">${esc(t)}</li>`),
+    .map((g, i) => {
+      const words = [
+        ...g.using.map((t) => `<li class="skill">${esc(t)}</li>`),
+        ...g.exploring.map((t) => `<li class="skill skill--explore"><span>${esc(t)}</span><span class="skill__mark mono">exploring</span></li>`),
       ].join('');
-      return `<div class="skillset__row reveal"><dt class="skillset__name mono">${esc(g.name)}</dt><dd><ul class="chips">${chips}</ul></dd></div>`;
+      return `<article class="sgroup sgroup--${g.size || 'md'} reveal">
+        <h3 class="sgroup__head mono"><span class="sgroup__no">${String(i + 1).padStart(2, '0')}</span>${esc(g.name)}</h3>
+        <ul class="sgroup__list">${words}</ul>
+      </article>`;
     })
     .join('');
 
-  // Topics: projects I follow, grouped by theme. Not a ranking.
-  const tag = (t, url, repo) =>
-    url
-      ? `<li><a class="topic" href="${esc(url)}" target="_blank" rel="noopener" aria-label="${esc(t)}, see ${esc(repo)} on GitHub">${esc(t)}</a></li>`
-      : `<li><span class="topic">${esc(t)}</span></li>`;
-  $('#topic-map').innerHTML =
-    topics.themes
-      .map(
-        (th) => `<div class="tmap__row reveal">
-        <dt class="tmap__name mono">${esc(th.name)}</dt>
-        <dd>
-          <ul class="tmap__tags mono">${th.tags.map((t) => tag(t, th.url, th.repo)).join('')}</ul>
-          <p class="tmap__src"><a class="tmap__repo mono" href="${esc(th.url)}" target="_blank" rel="noopener">${esc(th.repo)}<span aria-hidden="true"> ↗</span></a> <span class="tmap__about">${esc(th.about)}</span></p>
-        </dd>
-      </div>`
-      )
-      .join('') +
-    (topics.shared.length
-      ? `<div class="tmap__row tmap__row--shared reveal"><dt class="tmap__name mono">Across all</dt><dd><ul class="tmap__tags mono">${topics.shared.map((t) => tag(t)).join('')}</ul></dd></div>`
-      : '');
+  // Topics: four interest areas, each tied to a project I follow. Not a ranking.
+  $('#topic-map').innerHTML = topics.themes
+    .map(
+      (th, i) => `<article class="tblock reveal">
+        <div class="tblock__top mono" aria-hidden="true"><span>${String(i + 1).padStart(2, '0')} / ${esc(th.label || '')}</span>${MOTIFS[i % MOTIFS.length]}</div>
+        <h3 class="tblock__title"><a class="tblock__link" href="${esc(th.url)}" target="_blank" rel="noopener">${esc(th.name)}<span class="sr-only"> (${esc(th.repo)} on GitHub, opens in a new tab)</span></a></h3>
+        <p class="tblock__about">${esc(th.about)}</p>
+        <ul class="tblock__tags mono">${th.tags.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+        <p class="tblock__repo mono" aria-hidden="true"><span>${esc(th.repo)}</span><span class="tblock__arrow">↗</span></p>
+      </article>`
+    )
+    .join('');
+  $('#topics-shared').innerHTML = topics.shared.length
+    ? `Across all four <span class="tblock__tags">${topics.shared.map((t) => `<span>${esc(t)}</span>`).join('')}</span>`
+    : '';
 
   // Contact
   const cta = $('#contact-cta');
@@ -181,6 +193,18 @@ function heroEntrance() {
     .to('.hero .reveal', { opacity: 1, y: 0, duration: 0.9, stagger: 0.09 }, 0.35);
 }
 
+// Topic blocks: a faint light follows the pointer. Fine pointers only.
+function initTopicGlow() {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('.tblock').forEach((el) => {
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      el.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+  });
+}
+
 function initReveals() {
   if (reducedMotion.value) {
     root.classList.add('reveals-done');
@@ -197,6 +221,8 @@ function initReveals() {
 const CORE_STATES = {
   top:      { x: 0.42, y: 0.02,  scale: 0.92, distort: 0.17, freq: 1.1,  shell: 0.16, spread: 1.0,  glow: 1.0, opacity: 1.0,  spin: 1.0 },
   identity: { x: 0.66, y: -0.08, scale: 0.78, distort: 0.18, freq: 2.2,  shell: 0.34, spread: 1.3,  glow: 0.7, opacity: 0.5,  spin: 0.7 },
+  skills:   { x: 0.56, y: 0.0,   scale: 1.02, distort: 0.2,  freq: 1.5,  shell: 0.3,  spread: 1.15, glow: 1.0, opacity: 0.95, spin: 0.6 },
+  topics:   { x: -0.62, y: 0.04, scale: 0.9,  distort: 0.26, freq: 2.0,  shell: 0.24, spread: 1.4,  glow: 0.85, opacity: 0.8, spin: 0.45 },
   archive:  { x: -0.7, y: 0.25,  scale: 1.35, distort: 0.3,  freq: 1.6,  shell: 0.1,  spread: 1.6,  glow: 0.6, opacity: 0.14, spin: 0.5 },
   lab:      { x: 0.0,  y: 0.0,   scale: 0.62, distort: 0.55, freq: 3.2,  shell: 0.28, spread: 0.85, glow: 1.0, opacity: 0.3,  spin: 1.6 },
   contact:  { x: 0.38, y: 0.0,   scale: 0.72, distort: 0.08, freq: 1.0,  shell: 0.22, spread: 1.1,  glow: 0.8, opacity: 0.9,  spin: 0.3 },
@@ -205,7 +231,7 @@ const CORE_STATES = {
 function initCoreScroll() {
   if (!core) return;
   Object.assign(core.state, CORE_STATES.top);
-  const order = ['identity', 'archive', 'lab', 'contact'];
+  const order = ['identity', 'skills', 'topics', 'archive', 'lab', 'contact'];
   order.forEach((id, i) => {
     const prev = i === 0 ? 'top' : order[i - 1];
     const el = document.getElementById(id);
@@ -263,6 +289,7 @@ async function loadCore(webgl) {
 
 function main() {
   renderContent();
+  initTopicGlow();
   initNav();
 
   const archive = initArchive();

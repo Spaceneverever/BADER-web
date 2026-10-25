@@ -145,14 +145,15 @@ export const projects = [
 // Skills. "using" lists only what shows up in my own code (my repositories and this site).
 // "exploring" is for things I'm learning or want to learn, kept visibly separate.
 // No levels, percentages, or ratings on purpose.
+// size sets how much room a group gets on the page: 'lg', 'md' or 'sm'.
 export const skills = {
   groups: [
-    { name: 'Web development', using: ['JavaScript', 'TypeScript', 'React', 'HTML', 'CSS', 'Vite', 'Tailwind CSS'], exploring: ['Next.js'] },
-    { name: 'Creative development', using: ['Three.js', 'WebGL / GLSL', 'GSAP', 'Framer Motion', 'Canvas 2D'], exploring: ['React Three Fiber'] },
-    { name: 'Backend & data', using: ['Node.js', 'Express', 'PostgreSQL', 'Drizzle ORM', 'Supabase'], exploring: [] },
-    { name: 'UI & interaction', using: ['Interface design', 'Interaction design', 'Responsive design'], exploring: ['Visual systems'] },
-    { name: 'AI & automation', using: ['AI API integration', 'AI-assisted development'], exploring: ['Workflow automation'] },
-    { name: 'Tools & workflow', using: ['Git', 'GitHub', 'ESLint'], exploring: ['Figma'] },
+    { name: 'Web development', size: 'lg', using: ['JavaScript', 'TypeScript', 'React', 'HTML', 'CSS', 'Vite', 'Tailwind CSS'], exploring: ['Next.js'] },
+    { name: 'Creative development', size: 'lg', using: ['Three.js', 'WebGL / GLSL', 'GSAP', 'Framer Motion', 'Canvas 2D'], exploring: ['React Three Fiber'] },
+    { name: 'Backend & data', size: 'md', using: ['Node.js', 'Express', 'PostgreSQL', 'Drizzle ORM', 'Supabase'], exploring: [] },
+    { name: 'AI & automation', size: 'md', using: ['AI API integration', 'AI-assisted development'], exploring: ['Workflow automation'] },
+    { name: 'UI & interaction', size: 'sm', using: ['Interface design', 'Interaction design', 'Responsive design'], exploring: ['Visual systems'] },
+    { name: 'Tools & workflow', size: 'sm', using: ['Git', 'GitHub', 'ESLint'], exploring: ['Figma'] },
   ],
 };
 
@@ -164,6 +165,7 @@ export const topics = {
   themes: [
     {
       name: 'AI agents & autonomous systems',
+      label: 'agents',
       repo: 'openclaw/openclaw',
       url: 'https://github.com/openclaw/openclaw',
       about: 'An open-source AI assistant that runs on your own devices and works inside the chat apps you already use, with swappable models and agent harnesses.',
@@ -171,6 +173,7 @@ export const topics = {
     },
     {
       name: 'Multimodal AI & open models',
+      label: 'multimodal',
       repo: 'QwenLM/Qwen2.5-Omni',
       url: 'https://github.com/QwenLM/Qwen2.5-Omni',
       about: 'An end-to-end multimodal model from the Qwen team that takes text, images, audio and video, and answers in text or natural speech.',
@@ -178,6 +181,7 @@ export const topics = {
     },
     {
       name: 'Developer tools & AI workflows',
+      label: 'dev tools',
       repo: 'lbjlaq/Antigravity-Manager',
       url: 'https://github.com/lbjlaq/Antigravity-Manager',
       about: 'A desktop app (Tauri, Rust, React) for managing AI service accounts and translating requests between different provider APIs.',
@@ -185,6 +189,7 @@ export const topics = {
     },
     {
       name: 'Application security & audit automation',
+      label: 'appsec',
       repo: 'cloudflare/security-audit-skill',
       url: 'https://github.com/cloudflare/security-audit-skill',
       about: "A coding-agent skill from Cloudflare that runs a staged security audit: reconnaissance, hunting, independent validation and verified reporting.",
