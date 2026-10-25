@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>BLACKSITE · Personal System</title>
+  <meta name="description" content="Personal portfolio of a creative technologist exploring web development, interactive design, AI, and 3D on the web." />
+  <meta name="theme-color" content="#060907" />
+  <meta name="color-scheme" content="dark" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="BLACKSITE · Personal System" />
+  <meta property="og:description" content="A creative technologist's private system. Web, interaction, AI, and 3D experiments." />
+  <!-- DEPLOY STEP: add og:url and an absolute og:image once the site has a live address. -->
+  <meta name="twitter:card" content="summary" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23060907'/%3E%3Cpath d='M7 9l7 7-7 7' fill='none' stroke='%2357e38f' stroke-width='2.4'/%3E%3Cpath d='M16 23h9' stroke='%2357e38f' stroke-width='2.4'/%3E%3C/svg%3E" />
+  <script>
+    // Mark JS early so no-JS visitors never see the boot overlay.
+    document.documentElement.classList.add('js');
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ░░ BOOT SEQUENCE ░░ (fictional, visual only) -->
+  <div class="boot" id="boot" role="dialog" aria-modal="true" aria-label="System start sequence" hidden>
+    <div class="boot__frame">
+      <div class="boot__head mono">
+        <span>BLACKSITE/PS-1</span>
+        <span class="boot__head-right">COLD START</span>
+      </div>
+      <ol class="boot__log mono" id="boot-log" aria-live="polite"></ol>
+      <div class="boot__bar" aria-hidden="true"><span id="boot-bar"></span></div>
+      <dl class="boot__diag mono" id="boot-diag"></dl>
+      <div class="boot__foot mono">
+        <button class="boot__skip" id="boot-skip" type="button">[ ENTER NOW ]</button>
+        <span class="boot__hint">or press <kbd>Esc</kbd></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ ENVIRONMENT LAYERS ░░ -->
+  <div class="env" aria-hidden="true">
+    <canvas class="env__core" id="core-canvas"></canvas>
+    <div class="env__fallback" id="core-fallback"></div>
+    <div class="env__grid"></div>
+    <div class="env__vignette"></div>
+  </div>
+  <div class="crt" aria-hidden="true"></div>
+
+  <!-- ░░ HUD FRAME ░░ -->
+  <div class="hud mono" aria-hidden="true">
+    <span class="hud__corner hud__corner--tl"></span>
+    <span class="hud__corner hud__corner--tr"></span>
+    <span class="hud__corner hud__corner--bl"></span>
+    <span class="hud__corner hud__corner--br"></span>
+    <span class="hud__readout hud__readout--l">PTR <span id="hud-ptr">0000,0000</span></span>
+    <span class="hud__readout hud__readout--r">DEPTH <span id="hud-scroll">000</span>%</span>
+  </div>
+
+  <!-- ░░ NAVIGATION ░░ -->
+  <header class="topbar mono">
+    <a class="brand" href="#top" aria-label="BLACKSITE, back to top">
+      <span class="brand__mark" aria-hidden="true">&gt;_</span>
+      <span class="brand__name">BLACKSITE</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <ol class="nav__list">
+        <li><a class="nav__link" href="#identity" data-nav="identity"><span class="nav__idx">[01]</span><span class="nav__label">IDENTITY</span></a></li>
+        <li><a class="nav__link" href="#archive" data-nav="archive"><span class="nav__idx">[02]</span><span class="nav__label">ARCHIVE</span></a></li>
+        <li><a class="nav__link" href="#lab" data-nav="lab"><span class="nav__idx">[03]</span><span class="nav__label">LAB</span></a></li>
+        <li><a class="nav__link" href="#contact" data-nav="contact"><span class="nav__idx">[04]</span><span class="nav__label">CONTACT</span></a></li>
+      </ol>
+    </nav>
+    <button class="inspect-toggle" id="inspect-toggle" type="button" aria-pressed="false" title="Show the interface's structure">
+      <span class="inspect-toggle__box" aria-hidden="true"></span>INSPECT
+    </button>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <!-- ░░ HERO ░░ -->
+    <section class="hero" id="top" aria-labelledby="hero-title" data-inspect="section.hero">
+      <div class="hero__label mono reveal">
+        <span class="dot dot--live" aria-hidden="true"></span>
+        <span id="hero-label"></span>
+      </div>
+
+      <h1 class="hero__title" id="hero-title" data-inspect="h1.display">
+        <span class="hero__line"><span class="hero__word" data-scramble>BEYOND</span></span>
+        <span class="hero__line hero__line--indent"><span class="hero__word" data-scramble>THE</span> <em class="hero__serif">interface.</em></span>
+      </h1>
+
+      <div class="hero__intro reveal" data-inspect="div.terminal-intro">
+        <p class="hero__prompt mono" aria-hidden="true"><span class="c-accent">~/identity</span> $ cat intro.txt</p>
+        <p class="hero__copy">I explore the intersection of technology, design, and digital experimentation, turning ambitious ideas into interactive experiences.<span class="cursor" aria-hidden="true"></span></p>
+      </div>
+
+      <aside class="status reveal mono" aria-label="Status" data-inspect="aside.status-panel">
+        <div class="status__row status__row--head"><span>STATUS</span><span class="c-accent">ONLINE</span></div>
+        <div class="status__row"><span class="status__k">OPERATOR</span><span class="status__v" id="status-name" dir="auto"></span></div>
+        <div class="status__row"><span class="status__k">LOCAL TIME</span><time class="status__v" id="status-clock">--:--:--</time></div>
+        <div class="status__row"><span class="status__k">ZONE</span><span class="status__v" id="status-zone">--</span></div>
+        <div class="status__row"><span class="status__k">SESSION</span><span class="status__v" id="status-uptime">00:00:00</span></div>
+        <div class="status__row"><span class="status__k">RENDER</span><span class="status__v" id="status-render">PENDING</span></div>
+      </aside>
+
+      <div class="hero__scroll mono reveal" aria-hidden="true">
+        <span class="hero__scroll-line"></span>
+        SCROLL TO DESCEND
+      </div>
+    </section>
+
+    <!-- ░░ 01 IDENTITY ░░ -->
+    <section class="identity section" id="identity" aria-labelledby="identity-title" data-section data-inspect="section.identity">
+      <header class="section__head">
+        <p class="section__idx mono">[01] / IDENTITY_RECORD</p>
+        <h2 class="section__title" id="identity-title" data-scramble>OPERATOR_​PROFILE</h2>
+      </header>
+
+      <div class="record">
+        <div class="record__main">
+          <div class="record__file mono reveal" aria-hidden="true">
+            <span>FILE: identity.rec</span><span>CLASS: PERSONAL</span><span>REV: 0.1</span>
+          </div>
+          <p class="record__summary reveal" id="profile-summary"></p>
+
+          <h3 class="record__label mono reveal">CURRENT_INTERESTS</h3>
+          <ul class="interests" id="interests"></ul>
+          <p class="record__note mono reveal">Listed as areas of interest and exploration, not certified expertise.</p>
+        </div>
+
+        <div class="record__side">
+          <div class="direction reveal" data-inspect="div.creative-direction">
+            <h3 class="record__label mono">CREATIVE_DIRECTION</h3>
+            <p class="direction__text" id="profile-direction"></p>
+          </div>
+
+          <figure class="portrait reveal" id="portrait" data-inspect="figure.portrait">
+            <div class="portrait__frame">
+              <div class="portrait__empty" id="portrait-empty">
+                <svg viewBox="0 0 120 150" aria-hidden="true" class="portrait__glyph">
+                  <circle cx="60" cy="56" r="24" />
+                  <path d="M18 150c4-30 20-46 42-46s38 16 42 46" />
+                </svg>
+                <span class="mono">IMAGE PENDING</span>
+              </div>
+            </div>
+            <figcaption class="portrait__cap mono">
+              <span>SUBJECT_IMG</span><span id="portrait-state">AWAITING UPLOAD</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ 02 ARCHIVE ░░ -->
+    <section class="archive section" id="archive" aria-labelledby="archive-title" data-section data-inspect="section.archive">
+      <header class="section__head section__head--split">
+        <div>
+          <p class="section__idx mono">[02] / DIGITAL_OPERATIONS</p>
+          <h2 class="section__title" id="archive-title" data-scramble>ARCHIVE</h2>
+        </div>
+        <p class="archive__legend mono">
+          <span><i class="tag tag--live">LIVE_ON_SITE</i> runs on this page</span>
+          <span><i class="tag tag--hold">PLACEHOLDER</i> reserved slot, no work yet</span>
+        </p>
+      </header>
+
+      <div class="filters mono" role="group" aria-label="Filter archive by category" id="filters"></div>
+      <p class="filters__count mono" id="archive-count" aria-live="polite"></p>
+      <ol class="ops" id="ops"></ol>
+    </section>
+
+    <!-- ░░ 03 LAB ░░ -->
+    <section class="lab section" id="lab" aria-labelledby="lab-title" data-section data-inspect="section.lab">
+      <header class="section__head">
+        <p class="section__idx mono">[03] / EXPERIMENTAL_LAB</p>
+        <h2 class="section__title" id="lab-title" data-scramble>THE LAB</h2>
+        <p class="section__lede">Two working instruments. Both run entirely in your browser.</p>
+      </header>
+
+      <div class="lab__grid">
+        <div class="term reveal" id="term" data-inspect="div.shell-sim">
+          <div class="term__bar mono">
+            <span class="term__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>shell_sim · local only</span>
+            <span class="term__tag">SIMULATED</span>
+          </div>
+          <div class="term__out mono" id="term-out" role="log" aria-live="polite" aria-label="Terminal output"></div>
+          <form class="term__in mono" id="term-form" autocomplete="off">
+            <label for="term-input" class="term__ps"><span class="c-accent">guest@blacksite</span>:~$</label>
+            <input id="term-input" class="term__input" type="text" spellcheck="false" autocapitalize="off" aria-describedby="term-help" />
+          </form>
+          <p class="term__help mono" id="term-help">Type <kbd>help</kbd> and press Enter. Nothing here runs on a real machine.</p>
+        </div>
+
+        <div class="field reveal" id="field" data-inspect="div.signal-field">
+          <div class="field__stage">
+            <canvas id="field-canvas" aria-label="Signal field: particles following a moving vector field" role="img"></canvas>
+            <span class="field__label mono" aria-hidden="true">SIGNAL_FIELD</span>
+            <span class="field__readout mono" aria-hidden="true" id="field-readout"></span>
+          </div>
+          <div class="field__controls mono">
+            <label class="dial"><span>FREQUENCY</span><input type="range" id="f-freq" min="1" max="10" value="4" /></label>
+            <label class="dial"><span>DRIFT</span><input type="range" id="f-drift" min="0" max="10" value="5" /></label>
+            <label class="dial"><span>SPECTRUM</span><input type="range" id="f-hue" min="0" max="100" value="18" /></label>
+            <button type="button" class="btn btn--ghost" id="f-reset">RESEED</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ 04 CONTACT ░░ -->
+    <section class="contact section" id="contact" aria-labelledby="contact-title" data-section data-inspect="section.contact">
+      <p class="section__idx mono">[04] / ESTABLISH_CONNECTION</p>
+      <h2 class="contact__title" id="contact-title">
+        <span class="contact__line mono">CONNECTION REQUEST AVAILABLE.</span>
+        <span class="contact__big" data-scramble>OPEN A CHANNEL?</span>
+      </h2>
+
+      <div class="contact__body">
+        <div class="contact__cta" id="contact-cta"></div>
+        <ul class="channels mono" id="channels"></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer mono" id="footer">
+    <div class="footer__standby">
+      <span class="dot dot--idle" aria-hidden="true"></span>
+      <span id="standby-text">SYSTEM ACTIVE</span>
+    </div>
+    <span>BLACKSITE v0.1 · built by hand with Vite, Three.js, and GSAP</span>
+    <a href="#top" class="footer__top">[ RETURN TO SURFACE ↑ ]</a>
+  </footer>
+
+  <!-- ░░ CASE STUDY ░░ -->
+  <dialog class="case" id="case" aria-labelledby="case-title">
+    <div class="case__inner">
+      <header class="case__head mono">
+        <span id="case-id"></span>
+        <button type="button" class="case__close" id="case-close" aria-label="Close case file">[ CLOSE ✕ ]</button>
+      </header>
+      <div class="case__visual" id="case-visual" aria-hidden="true"></div>
+      <p class="case__cat mono" id="case-cat"></p>
+      <h2 class="case__title" id="case-title"></h2>
+      <p class="case__summary" id="case-summary"></p>
+      <dl class="case__meta mono" id="case-meta"></dl>
+      <h3 class="record__label mono">BRIEF</h3>
+      <p class="case__brief" id="case-brief"></p>
+      <h3 class="record__label mono">FIELD_NOTES</h3>
+      <ul class="case__notes" id="case-notes"></ul>
+      <div class="case__actions" id="case-actions"></div>
+    </div>
+  </dialog>
+
+  <noscript>
+    <style>.reveal{opacity:1!important;transform:none!important}</style>
+    <p class="noscript mono">JavaScript is off. The 3D core, terminal, and archive need it. Contact: see GitHub @Spaceneverever.</p>
+  </noscript>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
