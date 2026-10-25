@@ -7,7 +7,7 @@ main, .footer { position: relative; z-index: 10; }
   padding: clamp(120px, 18vh, 220px) var(--gutter);
 }
 /* Quiet scrim so text stays readable over the core */
-.identity::before, .archive::before, .lab::before {
+.identity::before, .skills::before, .topics::before, .archive::before, .lab::before {
   content: ''; position: absolute; inset: 0 calc(50% - 50vw);
   background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9) 12%, rgba(0, 0, 0, 0.9) 88%, transparent);
   z-index: -1;
@@ -153,6 +153,57 @@ main, .footer { position: relative; z-index: 10; }
 @media (max-width: 560px) {
   .interests { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 }
+
+/* ── Skills ──────────────────────────────────────────────── */
+.skillset { border-top: 1px solid var(--line); }
+.skillset__row {
+  display: grid;
+  grid-template-columns: minmax(0, 16em) minmax(0, 1fr);
+  gap: 12px 40px;
+  align-items: baseline;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+.skillset__name { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--phosphor); }
+.skillset dd { margin: 0; min-width: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex; align-items: center;
+  padding: 6px 12px;
+  font-family: var(--f-mono); font-size: 12.5px; letter-spacing: 0.02em;
+  color: var(--text-primary);
+  border: 1px solid var(--line-mid);
+  transition: border-color 0.3s, color 0.3s;
+}
+.chip:hover { border-color: rgba(87, 227, 143, 0.6); color: var(--white-cold); }
+.chip--explore { color: var(--text-dim); border-style: dashed; }
+.chip--explore:hover { color: var(--text-secondary); }
+.skills__legend { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 24px; font-size: 11px; color: var(--text-dim); }
+.chip--sample { padding: 2px 8px; font-size: 10px; }
+.skills__legend .chip--explore { margin-left: 12px; }
+@media (max-width: 760px) {
+  .skillset__row { grid-template-columns: minmax(0, 1fr); padding: 20px 0; }
+}
+
+/* ── Top GitHub topics ─────────────────────────────────────── */
+.topics { padding-top: 0; }
+.topics__head { display: grid; gap: 10px; margin-bottom: 28px; }
+.topics__title { font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--white-cold); }
+.topics__sub { color: var(--text-secondary); font-size: 16px; max-width: 52ch; }
+.topic-map { display: flex; flex-wrap: wrap; gap: 6px 22px; max-width: 980px; }
+.topic {
+  position: relative;
+  padding: 6px 0;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  transition: color 0.3s;
+}
+.topic::before { content: '#'; color: var(--phosphor); opacity: 0.55; margin-right: 2px; transition: opacity 0.3s; }
+.topic:hover { color: var(--phosphor); }
+.topic:hover::before { opacity: 1; }
+.topic--explore { color: var(--text-dim); }
+.topic--explore::before { color: var(--text-dim); }
+.topics__note { margin-top: 24px; font-size: 11px; color: var(--text-dim); }
 
 /* ── Work ──────────────────────────────────────────────────── */
 .ops { border-top: 1px solid var(--line); }

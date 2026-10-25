@@ -141,3 +141,43 @@ export const projects = [
     size: 'sm',
   },
 ];
+
+// Skills. "using" lists only what shows up in my own code (my repositories and this site).
+// "exploring" is for things I'm learning or want to learn, kept visibly separate.
+// No levels, percentages, or ratings on purpose.
+export const skills = {
+  groups: [
+    { name: 'Web development', using: ['JavaScript', 'TypeScript', 'React', 'HTML', 'CSS', 'Vite', 'Tailwind CSS'], exploring: ['Next.js'] },
+    { name: 'Creative development', using: ['Three.js', 'WebGL / GLSL', 'GSAP', 'Framer Motion', 'Canvas 2D'], exploring: ['React Three Fiber'] },
+    { name: 'Backend & data', using: ['Node.js', 'Express', 'PostgreSQL', 'Drizzle ORM', 'Supabase'], exploring: [] },
+    { name: 'UI & interaction', using: ['Interface design', 'Interaction design', 'Responsive design'], exploring: ['Visual systems'] },
+    { name: 'AI & automation', using: ['AI API integration', 'AI-assisted development'], exploring: ['Workflow automation'] },
+    { name: 'Tools & workflow', using: ['Git', 'GitHub', 'ESLint'], exploring: ['Figma'] },
+  ],
+};
+
+// Topics. My repositories don't carry GitHub topic tags yet, so this is a
+// hand-kept interest map, not a ranking. Edit freely.
+// explore: true marks a topic I'm interested in but haven't built with yet.
+export const topics = [
+  { tag: 'javascript' },
+  { tag: 'typescript' },
+  { tag: 'react' },
+  { tag: 'vite' },
+  { tag: 'tailwindcss' },
+  { tag: 'nodejs' },
+  { tag: 'postgresql' },
+  { tag: 'supabase' },
+  { tag: 'threejs' },
+  { tag: 'webgl' },
+  { tag: 'gsap' },
+  { tag: 'framer-motion' },
+  { tag: 'creative-coding' },
+  { tag: 'ai-tools' },
+  { tag: 'ui-design' },
+  { tag: 'web-development' },
+  { tag: 'nextjs', explore: true },
+  { tag: 'generative-art', explore: true },
+  { tag: 'automation', explore: true },
+  { tag: 'open-source', explore: true },
+];

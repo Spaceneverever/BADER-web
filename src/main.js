@@ -7,7 +7,7 @@ import './styles/sections.css';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { identity, profile, contact } from './data/content.js';
+import { identity, profile, contact, skills, topics } from './data/content.js';
 import { runBoot } from './modules/boot.js';
 import { initArchive } from './modules/archive.js';
 import { initTerminal } from './modules/terminal.js';
@@ -46,6 +46,22 @@ function renderContent() {
     .join('');
 
 
+
+  // Skills: grouped tags, no levels or ratings.
+  $('#skillset').innerHTML = skills.groups
+    .map((g) => {
+      const chips = [
+        ...g.using.map((t) => `<li class="chip">${esc(t)}</li>`),
+        ...g.exploring.map((t) => `<li class="chip chip--explore" title="Exploring">${esc(t)}</li>`),
+      ].join('');
+      return `<div class="skillset__row reveal"><dt class="skillset__name mono">${esc(g.name)}</dt><dd><ul class="chips">${chips}</ul></dd></div>`;
+    })
+    .join('');
+
+  // Topics: an interest map, not a ranking.
+  $('#topic-map').innerHTML = topics
+    .map((t) => `<li class="topic${t.explore ? ' topic--explore' : ''}">${esc(t.tag)}</li>`)
+    .join('');
 
   // Contact
   const cta = $('#contact-cta');
