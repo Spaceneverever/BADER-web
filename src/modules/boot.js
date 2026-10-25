@@ -1,35 +1,22 @@
+import { identity } from '../data/content.js';
+
 // Fictional start-up sequence. Visual only: nothing is checked or verified.
-// The diagnostic readouts are real values read from the visitor's browser.
 
 const LINES = [
   'INITIALIZING PERSONAL SYSTEM',
   'LOADING CREATIVE MODULES',
-  'MOUNTING ARCHIVE',
   'ESTABLISHING SECURE SESSION',
 ];
-
-function diagnostics(webgl) {
-  const n = navigator;
-  return [
-    ['VIEWPORT', `${window.innerWidth}×${window.innerHeight}`],
-    ['PIXEL RATIO', `${(window.devicePixelRatio || 1).toFixed(2)}x`],
-    ['CPU THREADS', n.hardwareConcurrency ? String(n.hardwareConcurrency) : 'N/A'],
-    ['GRAPHICS', webgl ? 'WEBGL READY' : 'SVG FALLBACK'],
-    ['LANGUAGE', (n.language || 'N/A').toUpperCase()],
-    ['MOTION', 'FULL'],
-  ];
-}
 
 function stamp(t0) {
   const ms = performance.now() - t0;
   return `[${(ms / 1000).toFixed(3).padStart(7, '0')}]`;
 }
 
-export function runBoot({ webgl, onDone }) {
+export function runBoot({ onDone }) {
   const el = document.getElementById('boot');
   const log = document.getElementById('boot-log');
   const bar = document.getElementById('boot-bar');
-  const diag = document.getElementById('boot-diag');
   const skip = document.getElementById('boot-skip');
 
   // Returning visitors in the same tab get the short version.
@@ -41,10 +28,6 @@ export function runBoot({ webgl, onDone }) {
   // Content behind the overlay is out of reach until the sequence ends.
   const behind = [document.getElementById('main'), document.querySelector('.topbar'), document.getElementById('footer')];
   behind.forEach((n) => { n.inert = true; });
-
-  diag.innerHTML = diagnostics(webgl)
-    .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`)
-    .join('');
 
   const t0 = performance.now();
   const timers = [];
@@ -89,7 +72,7 @@ export function runBoot({ webgl, onDone }) {
   });
   const finalAt = LINES.length * step;
   const id1 = setTimeout(() => {
-    typeLine('IDENTITY VERIFIED.', true);
+    typeLine(`IDENTITY VERIFIED: ${identity.name.toUpperCase()}`, true);
     bar.style.transform = 'scaleX(1)';
   }, finalAt);
   const id2 = setTimeout(finish, finalAt + (fast ? 260 : 700));

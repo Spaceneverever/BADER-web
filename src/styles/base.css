@@ -1,3 +1,21 @@
+/* Arabic display face, self-hosted (SIL Open Font License, see src/fonts) */
+@font-face {
+  font-family: 'Noto Kufi Arabic';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/noto-kufi-arabic-arabic-500-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+@font-face {
+  font-family: 'Noto Kufi Arabic';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/noto-kufi-arabic-arabic-700-normal.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+}
+
 /* ── Design tokens ─────────────────────────────────────────── */
 :root {
   /* canvas & surfaces: tinted toward phosphor, never pure black */
@@ -28,6 +46,7 @@
   --f-display: 'Archivo Variable', 'Arial Narrow', system-ui, sans-serif;
   --f-serif: 'Instrument Serif', 'Times New Roman', serif;
   --f-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --f-arabic: 'Noto Kufi Arabic', 'Geeza Pro', 'Segoe UI', sans-serif;
 
   /* rhythm */
   --gutter: clamp(16px, 4vw, 56px);
@@ -72,6 +91,7 @@ h1, h2, h3, p, figure, dl, dd { margin: 0; }
 ::selection { background: var(--phosphor); color: var(--canvas); }
 
 .mono { font-family: var(--f-mono); letter-spacing: 0.02em; }
+[lang='ar'] { font-family: var(--f-arabic); letter-spacing: 0; }
 .c-accent { color: var(--phosphor); }
 kbd {
   font-family: var(--f-mono);

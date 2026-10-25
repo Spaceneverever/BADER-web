@@ -45,14 +45,18 @@ root.classList.toggle('motion-off', reducedMotion.value);
 // ── Content from the content file ────────────────────────────
 function renderContent() {
   $('#hero-label').textContent = identity.label;
-  $('#status-name').textContent = identity.name;
+  // Name: hero lines, top bar, identity heading, footer.
+  const words = identity.name.toUpperCase().split(/\s+/);
+  $$('.hero__word').forEach((el, i) => { el.textContent = words[i] || ''; delete el.dataset.text; });
+  $$('[data-name]').forEach((el) => { el.textContent = identity.name; });
+  $$('[data-name-ar]').forEach((el) => { el.textContent = identity.nameAr; });
+  document.title = `${identity.name} · ${identity.nameAr}`;
   $('#profile-summary').textContent = profile.summary;
   $('#profile-direction').textContent = profile.direction;
   $('#interests').innerHTML = profile.interests
     .map(
-      (it, i) => `<li class="interest reveal">
-        <span class="interest__n">${String(i + 1).padStart(2, '0')}</span>
-        <span class="interest__k">${esc(it.key)}</span>
+      (it) => `<li class="interest reveal">
+        <span class="interest__k">${esc(it.key.replace(/_/g, ' '))}</span>
         <span class="interest__note">${esc(it.note)}</span>
       </li>`
     )
@@ -100,13 +104,12 @@ function renderContent() {
   );
   contact.channels.forEach((c) => rows.push({ ...c, ext: true }));
   $('#channels').innerHTML = rows
-    .map((r, i) => {
-      const n = `<span class="channel__n">${String(i + 1).padStart(2, '0')}</span>`;
+    .map((r) => {
       if (!r.url) {
-        return `<li class="channel"><div class="channel__pending">${n}<span>${esc(r.label)}</span><span class="channel__h">not configured</span><span class="channel__go">PENDING</span></div></li>`;
+        return `<li><div class="channel__pending"><span>${esc(r.label)}</span><span class="channel__h">pending</span></div></li>`;
       }
       const ext = r.ext ? ' target="_blank" rel="noopener noreferrer"' : '';
-      return `<li class="channel"><a class="channel__a" href="${esc(r.url)}"${ext}>${n}<span>${esc(r.label)}</span><span class="channel__h">${esc(r.handle || '')}</span><span class="channel__go" aria-hidden="true">${r.ext ? '↗' : '→'}</span></a></li>`;
+      return `<li><a class="channel__a" href="${esc(r.url)}"${ext}><span>${esc(r.label)}</span><span class="channel__h">${esc(r.handle || '')} <span aria-hidden="true">${r.ext ? '↗' : '→'}</span></span></a></li>`;
     })
     .join('');
 }
@@ -115,18 +118,14 @@ function renderContent() {
 function initClock() {
   const clock = $('#status-clock');
   const zone = $('#status-zone');
-  const up = $('#status-uptime');
-  const t0 = Date.now();
   let tz = '';
   try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch {}
-  zone.textContent = identity.location || (tz ? tz.replace(/_/g, ' ').toUpperCase() : 'LOCAL');
+  zone.textContent = identity.location || (tz ? tz.replace(/_/g, ' ') : 'local time');
   const fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
   function tick() {
     const now = new Date();
     clock.textContent = fmt.format(now);
     clock.dateTime = now.toISOString();
-    const s = Math.floor((Date.now() - t0) / 1000);
-    up.textContent = [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map((v) => String(v).padStart(2, '0')).join(':');
   }
   tick();
   // Align ticks to the second boundary so the clock never drifts visibly.
@@ -175,50 +174,15 @@ function goTo(id) {
   history.replaceState(null, '', id === 'top' ? location.pathname : `#${id}`);
 }
 
-// ── HUD: pointer position and scroll depth (real readings) ──
-function initHud(onPointer) {
-  const ptr = $('#hud-ptr');
-  const sc = $('#hud-scroll');
-  let px = 0, py = 0, queued = false;
-  const flush = () => {
-    queued = false;
-    ptr.textContent = `${String(px).padStart(4, '0')},${String(py).padStart(4, '0')}`;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    sc.textContent = String(Math.round((window.scrollY / Math.max(1, max)) * 100)).padStart(3, '0');
-  };
-  const queue = () => { if (!queued) { queued = true; requestAnimationFrame(flush); } };
+// ── Pointer and scroll listeners ────────────────────────────
+function initPointer(onPointer) {
   window.addEventListener('pointermove', (e) => {
-    px = Math.round(e.clientX);
-    py = Math.round(e.clientY);
     onPointer((e.clientX / window.innerWidth) * 2 - 1, (e.clientY / window.innerHeight) * 2 - 1);
-    queue();
   }, { passive: true });
   const bar = document.querySelector('.topbar');
   window.addEventListener('scroll', () => {
-    queue();
     bar.classList.toggle('is-scrolled', window.scrollY > 24);
   }, { passive: true });
-  flush();
-}
-
-// ── Inspect overlay ─────────────────────────────────────────
-let inspecting = false;
-function toggleInspect(force) {
-  inspecting = typeof force === 'boolean' ? force : !inspecting;
-  document.body.classList.toggle('inspecting', inspecting);
-  $('#inspect-toggle').setAttribute('aria-pressed', String(inspecting));
-  $$('.inspect-tag').forEach((t) => t.remove());
-  if (inspecting) {
-    $$('[data-inspect]').forEach((el) => {
-      const r = el.getBoundingClientRect();
-      const tag = document.createElement('span');
-      tag.className = 'inspect-tag';
-      tag.setAttribute('aria-hidden', 'true');
-      tag.textContent = `${el.dataset.inspect} · ${Math.round(r.width)}×${Math.round(r.height)}`;
-      el.appendChild(tag);
-    });
-  }
-  return inspecting;
 }
 
 // ── Motion ──────────────────────────────────────────────────
@@ -227,7 +191,7 @@ const titleDrift = [];
 function heroEntrance() {
   if (reducedMotion.value) return;
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-  tl.from('.hero__word, .hero__serif', { yPercent: 110, opacity: 0, duration: 1.2, stagger: 0.08 }, 0)
+  tl.from('.hero__word', { yPercent: 110, opacity: 0, duration: 1.2, stagger: 0.08 }, 0)
     .to('.hero .reveal', { opacity: 1, y: 0, duration: 0.9, stagger: 0.09 }, 0.25)
     .add(() => $$('.hero [data-scramble]').forEach((el, i) => setTimeout(() => scramble(el, { duration: 700 }), i * 90)), 0.1);
 }
@@ -287,14 +251,13 @@ function initStandby() {
   ScrollTrigger.create({
     trigger: '#footer',
     start: 'top bottom',
-    onEnter: () => { document.body.classList.add('standby'); label.textContent = 'RETURNING TO STANDBY · PAGE STILL ACTIVE'; },
-    onLeaveBack: () => { document.body.classList.remove('standby'); label.textContent = 'SYSTEM ACTIVE'; },
+    onEnter: () => { document.body.classList.add('standby'); label.textContent = 'Standby · page still active'; },
+    onLeaveBack: () => { document.body.classList.remove('standby'); label.textContent = 'System active'; },
   });
 }
 
 function initParallax() {
   const layers = [
-    { el: $('.status'), x: -10, y: -8 },
     { el: $('.hero__label'), x: 6, y: 4 },
     { el: $('.hero__title'), x: -6, y: -3 },
   ].filter((l) => l.el);
@@ -320,7 +283,7 @@ function hasWebGL() {
 }
 
 async function loadCore(webgl) {
-  const status = $('#status-render');
+  const status = { set textContent(v) { document.documentElement.dataset.render = v; } };
   const canvas = $('#core-canvas');
   if (!webgl) {
     const { createFallback } = await import('./modules/core.js');
@@ -352,14 +315,12 @@ function main() {
   initNav();
 
   const archive = initArchive({ onFilter: () => ScrollTrigger.refresh() });
-  initTerminal({ openCase: (id) => archive.open(id), goTo, toggleInspect: () => toggleInspect() });
+  initTerminal({ openCase: (id) => archive.open(id), goTo });
   const field = initField({ reducedMotion });
 
-  $('#inspect-toggle').addEventListener('click', () => toggleInspect());
-  window.addEventListener('resize', () => { if (inspecting) toggleInspect(true); });
 
   const parallax = initParallax();
-  initHud((nx, ny) => {
+  initPointer((nx, ny) => {
     core?.setPointer(nx, ny);
     parallax(nx, ny);
   });
@@ -378,14 +339,14 @@ function main() {
     start();
   } else {
     // Hero content waits hidden until the boot ends.
-    gsap.set('.hero__word, .hero__serif', { yPercent: 110, opacity: 0 });
+    gsap.set('.hero__word', { yPercent: 110, opacity: 0 });
     runBoot({
       webgl,
       onDone: (bootEl) => {
-        gsap.set('.hero__word, .hero__serif', { clearProps: 'all' });
+        gsap.set('.hero__word', { clearProps: 'all' });
         gsap.to(bootEl, {
           opacity: 0,
-          duration: 0.6,
+          duration: reducedMotion.value ? 0 : 0.6,
           ease: 'power2.inOut',
           onComplete: () => { bootEl.hidden = true; bootEl.style.opacity = ''; },
         });
@@ -415,7 +376,7 @@ function main() {
     if (e.matches) {
       // Pin everything to its final state and stop the drives.
       $('#boot')?.hidden || $('#boot-skip')?.click();
-      gsap.set('.reveal, .hero__word, .hero__serif, .section__title, .contact__big, .status, .hero__label, .hero__title', { clearProps: 'transform,opacity' });
+      gsap.set('.reveal, .hero__word, .section__title, .contact__big, .hero__label, .hero__title', { clearProps: 'transform,opacity' });
       titleDrift.forEach((t) => { t.scrollTrigger?.disable(false); });
       gsap.set('.section__title, .contact__big', { clearProps: 'transform' });
       root.classList.add('reveals-done');

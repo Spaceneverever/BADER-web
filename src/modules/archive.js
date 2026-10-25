@@ -2,9 +2,9 @@ import { projects } from '../data/content.js';
 import { projectVisual } from './visuals.js';
 
 const STATUS = {
-  LIVE_ON_SITE: { cls: 'tag--live', text: 'LIVE_ON_SITE' },
-  PLACEHOLDER: { cls: 'tag--hold', text: 'PLACEHOLDER' },
-  PUBLISHED: { cls: 'tag--pub', text: 'PUBLISHED' },
+  LIVE_ON_SITE: { cls: 'c-accent', text: 'Runs on this site' },
+  PLACEHOLDER: { cls: 'op__reserved', text: 'Reserved slot' },
+  PUBLISHED: { cls: '', text: 'Published' },
 };
 
 const esc = (s) =>
@@ -17,19 +17,22 @@ export function initArchive({ onFilter } = {}) {
   const dialog = document.getElementById('case');
   let lastTrigger = null;
 
-  // Entries
+  // Entries: a quiet list. Detail lives in the case file.
   list.innerHTML = projects
-    .map((p, i) => {
-      const st = STATUS[p.status] || STATUS.PLACEHOLDER;
-      return `<li class="op op--${p.size || 'md'} ${p.status === 'PLACEHOLDER' ? 'op--placeholder' : ''} reveal" data-cat="${esc(p.category)}">
+    .map((p) => {
+      const hold = p.status === 'PLACEHOLDER';
+      return `<li class="op ${hold ? 'op--placeholder' : ''} reveal" data-cat="${esc(p.category)}">
         <button type="button" class="op__btn" data-op="${esc(p.id)}" aria-haspopup="dialog">
-          <span class="op__visual">${projectVisual(p.visual, i * 97 + 13)}<span class="op__scan"></span></span>
-          <span class="op__meta">
-            <span class="op__row"><span>${esc(p.id)} · ${esc(p.category)}</span><i class="tag ${st.cls}">${st.text}</i></span>
+          <span class="op__id">${esc(p.id)}</span>
+          <span class="op__main">
             <span class="op__title">${esc(p.title)}</span>
             <span class="op__sum">${esc(p.summary)}</span>
-            <span class="op__row"><span class="op__stack">${p.stack.map(esc).join(' / ')}</span><span class="op__open">OPEN FILE <span aria-hidden="true">→</span></span></span>
           </span>
+          <span class="op__cat">
+            <span>${esc(p.category.replace(/_/g, ' '))}</span>
+            ${hold ? '<span class="op__reserved">Reserved slot</span>' : `<span class="op__stack">${p.stack.map(esc).join(' · ')}</span>`}
+          </span>
+          <span class="op__go" aria-hidden="true">→</span>
         </button>
       </li>`;
     })
@@ -40,7 +43,8 @@ export function initArchive({ onFilter } = {}) {
   filters.innerHTML = cats
     .map((c) => {
       const n = c === 'ALL' ? projects.length : projects.filter((p) => p.category === c).length;
-      return `<button type="button" class="filter" data-filter="${esc(c)}" aria-pressed="${c === 'ALL'}">${esc(c)}<span class="filter__n">${n}</span></button>`;
+      const label = c === 'ALL' ? 'All' : c.replace(/_/g, ' ').toLowerCase();
+      return `<button type="button" class="filter" data-filter="${esc(c)}" aria-pressed="${c === 'ALL'}">${esc(label)} (${n})</button>`;
     })
     .join('');
 
@@ -52,7 +56,8 @@ export function initArchive({ onFilter } = {}) {
       if (on) shown++;
     });
     filters.querySelectorAll('.filter').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === cat)));
-    count.textContent = `${String(shown).padStart(2, '0')} / ${String(projects.length).padStart(2, '0')} ENTRIES · FILTER: ${cat}`;
+    const reserved = projects.filter((p) => p.status === 'PLACEHOLDER').length;
+    count.textContent = `${shown} of ${projects.length} shown.` + (reserved ? ` ${reserved} reserved ${reserved === 1 ? 'slot waits' : 'slots wait'} for future projects.` : '');
     onFilter?.();
   }
   filters.addEventListener('click', (e) => {
@@ -67,15 +72,15 @@ export function initArchive({ onFilter } = {}) {
     if (!p) return false;
     const st = STATUS[p.status] || STATUS.PLACEHOLDER;
     lastTrigger = trigger || document.activeElement;
-    document.getElementById('case-id').textContent = `CASE_FILE / ${p.id}`;
+    document.getElementById('case-id').textContent = `${p.id}`;
     document.getElementById('case-visual').innerHTML = projectVisual(p.visual, projects.indexOf(p) * 97 + 13);
-    document.getElementById('case-cat').textContent = p.category;
+    document.getElementById('case-cat').textContent = p.category.replace(/_/g, ' ');
     document.getElementById('case-title').textContent = p.title;
     document.getElementById('case-summary').textContent = p.summary;
     document.getElementById('case-meta').innerHTML = `
-      <div><dt>STATUS</dt><dd><i class="tag ${st.cls}">${st.text}</i></dd></div>
-      <div><dt>STACK</dt><dd>${p.stack.map(esc).join(', ')}</dd></div>
-      <div><dt>IDENTIFIER</dt><dd>${esc(p.id)}</dd></div>`;
+      <div><dt>Status</dt><dd class="${st.cls}">${st.text}</dd></div>
+      <div><dt>Stack</dt><dd>${p.stack.map(esc).join(', ')}</dd></div>
+      `;
     document.getElementById('case-brief').textContent = p.brief;
     document.getElementById('case-notes').innerHTML = p.notes.map((n) => `<li>${esc(n)}</li>`).join('');
     const actions = document.getElementById('case-actions');
@@ -83,7 +88,7 @@ export function initArchive({ onFilter } = {}) {
       const ext = /^https?:/.test(p.link.href);
       actions.innerHTML = `<a class="btn btn--solid" href="${esc(p.link.href)}" ${ext ? 'target="_blank" rel="noopener noreferrer"' : 'data-close'}>${esc(p.link.label)} <span aria-hidden="true">${ext ? '↗' : '→'}</span></a>`;
     } else {
-      actions.innerHTML = `<p class="case__pending">NO PUBLIC BUILD YET. THIS SLOT IS WAITING FOR A REAL PROJECT.</p>`;
+      actions.innerHTML = `<p class="case__pending">No public build yet. This slot is waiting for a real project.</p>`;
     }
     dialog.showModal();
     document.getElementById('case-close').focus();

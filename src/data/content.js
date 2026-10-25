@@ -6,10 +6,11 @@
 // ─────────────────────────────────────────────────────────────
 
 export const identity = {
-  // Shown in the status panel and the identity record.
-  name: 'بدر',
-  handle: 'OPERATOR_01',
-  label: 'CREATIVE TECHNOLOGIST / DIGITAL EXPLORER',
+  // Main name, shown large in the hero and in the top bar.
+  name: 'Bader Alsaqr',
+  // Arabic name, shown in the identity section and the footer.
+  nameAr: 'بدر الصقر',
+  label: 'Creative technologist / digital explorer',
   // Set to a path like '/portrait.jpg' (put the file in /public) to show the photo.
   portrait: null,
   // Plain-words location for the clock panel. null hides the line.

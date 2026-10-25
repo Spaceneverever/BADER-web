@@ -7,7 +7,7 @@ const esc = (s) =>
 
 const SECTIONS = ['top', 'identity', 'archive', 'lab', 'contact'];
 
-export function initTerminal({ openCase, goTo, toggleInspect }) {
+export function initTerminal({ openCase, goTo }) {
   const out = document.getElementById('term-out');
   const form = document.getElementById('term-form');
   const input = document.getElementById('term-input');
@@ -25,7 +25,7 @@ export function initTerminal({ openCase, goTo, toggleInspect }) {
     'intro.txt': () =>
       'I explore the intersection of technology, design, and digital experimentation, turning ambitious ideas into interactive experiences.',
     'identity.rec': () =>
-      [`OPERATOR   ${identity.name}`, `ROLE       ${identity.label}`, '', profile.summary].join('\n'),
+      [`NAME       ${identity.name}`, `ARABIC     ${identity.nameAr}`, `ROLE       ${identity.label}`, '', profile.summary].join('\n'),
     'interests.log': () => profile.interests.map((x, i) => `${String(i + 1).padStart(2, '0')}  ${x.key}`).join('\n'),
     'contact.cfg': () => {
       const rows = [`EMAIL      ${contact.email || '(not configured)'}`];
@@ -44,7 +44,7 @@ export function initTerminal({ openCase, goTo, toggleInspect }) {
           .join('\n'),
       html: true,
     },
-    whoami: { desc: 'who is this system for', run: () => `${identity.name} · ${identity.label}` },
+    whoami: { desc: 'whose system this is', run: () => `${identity.name} (${identity.nameAr}) · ${identity.label}` },
     ls: { desc: 'list files', run: () => Object.keys(files).join('   ') },
     cat: {
       desc: 'print a file, e.g. cat readme.md',
@@ -81,7 +81,6 @@ export function initTerminal({ openCase, goTo, toggleInspect }) {
         return `moving to #${s}`;
       },
     },
-    inspect: { desc: 'toggle the structure overlay', run: () => (toggleInspect() ? 'inspect overlay on' : 'inspect overlay off') },
     date: { desc: 'local date and time', run: () => new Date().toString() },
     uptime: {
       desc: 'time since this page loaded',

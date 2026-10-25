@@ -13,9 +13,9 @@ npm run preview   # serve the build
 
 ## Make it yours
 
-Everything personal lives in `src/data/content.js`:
+Everything personal lives in `src/data/content.js` (name, Arabic name, copy, links, projects):
 
-- `identity.name`, `identity.label`, `identity.location`
+- `identity.name` (hero, top bar), `identity.nameAr` (identity section, footer), `identity.label`, `identity.location`
 - `identity.portrait`: put a photo in `public/` (e.g. `public/portrait.jpg`) and set this to `'./portrait.jpg'`. It is shown black and white.
 - `profile`: summary, interests, creative direction
 - `contact.email` and `contact.channels`: anything left `null` shows as PENDING, never as a dead link
@@ -33,3 +33,4 @@ Before deploying, add `og:url` and an absolute `og:image` in `index.html` (marke
 - `src/modules/terminal.js`: simulated shell (fixed command table, executes nothing)
 - `src/modules/field.js`: SIGNAL_FIELD canvas experiment
 - `src/styles/`: tokens and base, layout chrome, sections
+- `src/fonts/`: self-hosted Noto Kufi Arabic for the Arabic name (SIL Open Font License)
