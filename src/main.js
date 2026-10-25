@@ -9,7 +9,6 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { identity, profile, contact } from './data/content.js';
 import { runBoot } from './modules/boot.js';
-import { scramble } from './modules/scramble.js';
 import { initArchive } from './modules/archive.js';
 import { initTerminal } from './modules/terminal.js';
 import { initField } from './modules/field.js';
@@ -27,32 +26,16 @@ const reducedMotion = { value: mq.matches };
 const root = document.documentElement;
 root.classList.toggle('motion-off', reducedMotion.value);
 
-// ── Grain texture generated once, no image file needed ───────
-(function grain() {
-  const c = document.createElement('canvas');
-  c.width = c.height = 128;
-  const x = c.getContext('2d');
-  const img = x.createImageData(128, 128);
-  for (let i = 0; i < img.data.length; i += 4) {
-    const v = (Math.random() * 255) | 0;
-    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
-    img.data[i + 3] = 255;
-  }
-  x.putImageData(img, 0, 0);
-  root.style.setProperty('--grain', `url(${c.toDataURL('image/png')})`);
-})();
-
 // ── Content from the content file ────────────────────────────
 function renderContent() {
   $('#hero-label').textContent = identity.label;
   // Name: hero lines, top bar, identity heading, footer.
   const words = identity.name.toUpperCase().split(/\s+/);
-  $$('.hero__word').forEach((el, i) => { el.textContent = words[i] || ''; delete el.dataset.text; });
+  $$('.hero__word').forEach((el, i) => { el.textContent = words[i] || ''; });
   $$('[data-name]').forEach((el) => { el.textContent = identity.name; });
   $$('[data-name-ar]').forEach((el) => { el.textContent = identity.nameAr; });
   document.title = `${identity.name} · ${identity.nameAr}`;
   $('#profile-summary').textContent = profile.summary;
-  $('#profile-direction').textContent = profile.direction;
   $('#interests').innerHTML = profile.interests
     .map(
       (it) => `<li class="interest reveal">
@@ -114,24 +97,6 @@ function renderContent() {
     .join('');
 }
 
-// ── Clock & session (real values only) ───────────────────────
-function initClock() {
-  const clock = $('#status-clock');
-  const zone = $('#status-zone');
-  let tz = '';
-  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch {}
-  zone.textContent = identity.location || (tz ? tz.replace(/_/g, ' ') : 'local time');
-  const fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-  function tick() {
-    const now = new Date();
-    clock.textContent = fmt.format(now);
-    clock.dateTime = now.toISOString();
-  }
-  tick();
-  // Align ticks to the second boundary so the clock never drifts visibly.
-  setTimeout(() => { tick(); setInterval(tick, 1000); }, 1000 - (Date.now() % 1000));
-}
-
 // ── Navigation ──────────────────────────────────────────────
 function initNav() {
   const links = $$('[data-nav]');
@@ -187,13 +152,11 @@ function initPointer(onPointer) {
 
 // ── Motion ──────────────────────────────────────────────────
 let core = null;
-const titleDrift = [];
 function heroEntrance() {
   if (reducedMotion.value) return;
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
   tl.from('.hero__word', { yPercent: 110, opacity: 0, duration: 1.2, stagger: 0.08 }, 0)
-    .to('.hero .reveal', { opacity: 1, y: 0, duration: 0.9, stagger: 0.09 }, 0.25)
-    .add(() => $$('.hero [data-scramble]').forEach((el, i) => setTimeout(() => scramble(el, { duration: 700 }), i * 90)), 0.1);
+    .to('.hero .reveal', { opacity: 1, y: 0, duration: 0.9, stagger: 0.09 }, 0.35);
 }
 
 function initReveals() {
@@ -205,13 +168,6 @@ function initReveals() {
     start: 'top 88%',
     once: true,
     onEnter: (els) => gsap.to(els, { opacity: 1, y: 0, duration: 0.9, ease: 'expo.out', stagger: 0.07, overwrite: true }),
-  });
-  $$('main > section:not(.hero) [data-scramble]').forEach((el) => {
-    ScrollTrigger.create({ trigger: el, start: 'top 85%', once: true, onEnter: () => scramble(el) });
-  });
-  // Section titles drift a little slower than the page: layered parallax.
-  $$('.section__title, .contact__big').forEach((el) => {
-    titleDrift.push(gsap.fromTo(el, { y: 40 }, { y: -40, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true } }));
   });
 }
 
@@ -244,32 +200,6 @@ function initCoreScroll() {
       },
     });
   });
-}
-
-function initStandby() {
-  const label = $('#standby-text');
-  ScrollTrigger.create({
-    trigger: '#footer',
-    start: 'top bottom',
-    onEnter: () => { document.body.classList.add('standby'); label.textContent = 'Standby · page still active'; },
-    onLeaveBack: () => { document.body.classList.remove('standby'); label.textContent = 'System active'; },
-  });
-}
-
-function initParallax() {
-  const layers = [
-    { el: $('.hero__label'), x: 6, y: 4 },
-    { el: $('.hero__title'), x: -6, y: -3 },
-  ].filter((l) => l.el);
-  const setters = layers.map((l) => ({
-    ...l,
-    qx: gsap.quickTo(l.el, 'x', { duration: 0.9, ease: 'power3.out' }),
-    qy: gsap.quickTo(l.el, 'y', { duration: 0.9, ease: 'power3.out' }),
-  }));
-  return (nx, ny) => {
-    if (reducedMotion.value || window.scrollY > window.innerHeight) return;
-    setters.forEach((s) => { s.qx(nx * s.x); s.qy(ny * s.y); });
-  };
 }
 
 // ── Boot the page ───────────────────────────────────────────
@@ -311,25 +241,18 @@ async function loadCore(webgl) {
 
 function main() {
   renderContent();
-  initClock();
   initNav();
 
-  const archive = initArchive({ onFilter: () => ScrollTrigger.refresh() });
+  const archive = initArchive();
   initTerminal({ openCase: (id) => archive.open(id), goTo });
   const field = initField({ reducedMotion });
 
-
-  const parallax = initParallax();
-  initPointer((nx, ny) => {
-    core?.setPointer(nx, ny);
-    parallax(nx, ny);
-  });
+  initPointer((nx, ny) => core?.setPointer(nx, ny));
 
   const webgl = hasWebGL();
   const start = () => {
     loadCore(webgl);
     initReveals();
-    initStandby();
     heroEntrance();
   };
 
@@ -341,7 +264,6 @@ function main() {
     // Hero content waits hidden until the boot ends.
     gsap.set('.hero__word', { yPercent: 110, opacity: 0 });
     runBoot({
-      webgl,
       onDone: (bootEl) => {
         gsap.set('.hero__word', { clearProps: 'all' });
         gsap.to(bootEl, {
@@ -376,15 +298,11 @@ function main() {
     if (e.matches) {
       // Pin everything to its final state and stop the drives.
       $('#boot')?.hidden || $('#boot-skip')?.click();
-      gsap.set('.reveal, .hero__word, .section__title, .contact__big, .hero__label, .hero__title', { clearProps: 'transform,opacity' });
-      titleDrift.forEach((t) => { t.scrollTrigger?.disable(false); });
-      gsap.set('.section__title, .contact__big', { clearProps: 'transform' });
+      gsap.set('.reveal, .hero__word', { clearProps: 'transform,opacity' });
       root.classList.add('reveals-done');
-      $$('[data-scramble]').forEach((el) => { if (el.dataset.text) el.textContent = el.dataset.text; });
       core?.stop();
       core?.renderOnce();
     } else {
-      titleDrift.forEach((t) => t.scrollTrigger?.enable());
       core?.start();
     }
     field?.refresh();

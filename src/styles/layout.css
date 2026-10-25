@@ -38,25 +38,7 @@
 .env__fallback { position: absolute; inset: 0; display: none; }
 .env__fallback.is-on { display: block; }
 .env__fallback svg { position: absolute; right: 6vw; top: 50%; width: min(56vw, 640px); height: auto; transform: translateY(-50%); opacity: 0.8; }
-.env__vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(2, 4, 3, 0.8) 100%); }
-
-/* Film grain: the only screen texture left, kept very quiet. */
-.grain { position: fixed; inset: 0; z-index: 60; pointer-events: none; overflow: hidden; }
-.grain::after {
-  content: ''; position: absolute; inset: -50%;
-  background-image: var(--grain);
-  background-size: 160px 160px;
-  opacity: 0.045;
-  animation: grain 1.2s steps(6) infinite;
-}
-@keyframes grain {
-  0% { transform: translate(0, 0); }
-  20% { transform: translate(-3%, 2%); }
-  40% { transform: translate(2%, -4%); }
-  60% { transform: translate(-4%, -1%); }
-  80% { transform: translate(3%, 3%); }
-  100% { transform: translate(0, 0); }
-}
+.env__vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, transparent 50%, #000 100%); }
 
 /* ── Top bar & nav ─────────────────────────────────────────── */
 .topbar {
@@ -68,7 +50,7 @@
   font-size: 12px;
   transition: background-color 0.4s;
 }
-.topbar.is-scrolled { background: rgba(6, 9, 7, 0.92); }
+.topbar.is-scrolled { background: rgba(0, 0, 0, 0.88); }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; letter-spacing: 0.14em; text-transform: uppercase; min-height: 44px; }
 .brand__mark { color: var(--phosphor); }
 .brand__name { color: var(--text-primary); }
@@ -96,7 +78,7 @@
     position: fixed; left: 0; right: 0; bottom: 0;
     margin: 0;
     padding: 0 8px env(safe-area-inset-bottom);
-    background: rgba(6, 9, 7, 0.95);
+    background: rgba(0, 0, 0, 0.94);
     border-top: 1px solid var(--line);
   }
   .nav__list { justify-content: space-between; gap: 0; }

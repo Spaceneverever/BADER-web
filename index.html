@@ -6,7 +6,7 @@
   <title>Bader Alsaqr · بدر الصقر</title>
   <meta name="description" content="Bader Alsaqr (بدر الصقر). A creative technologist exploring web development, interactive design, AI, and 3D on the web." />
   <meta name="author" content="Bader Alsaqr" />
-  <meta name="theme-color" content="#060907" />
+  <meta name="theme-color" content="#000000" />
   <meta name="color-scheme" content="dark" />
   <meta property="og:type" content="profile" />
   <meta property="og:title" content="Bader Alsaqr" />
@@ -37,7 +37,6 @@
     <div class="env__fallback" id="core-fallback"></div>
     <div class="env__vignette"></div>
   </div>
-  <div class="grain" aria-hidden="true"></div>
 
   <!-- Navigation -->
   <header class="topbar mono">
@@ -47,10 +46,10 @@
     </a>
     <nav class="nav" aria-label="Primary">
       <ol class="nav__list">
-        <li><a class="nav__link" href="#identity" data-nav="identity"><span class="nav__idx">01</span><span class="nav__label">Identity</span></a></li>
-        <li><a class="nav__link" href="#archive" data-nav="archive"><span class="nav__idx">02</span><span class="nav__label">Work</span></a></li>
-        <li><a class="nav__link" href="#lab" data-nav="lab"><span class="nav__idx">03</span><span class="nav__label">Lab</span></a></li>
-        <li><a class="nav__link" href="#contact" data-nav="contact"><span class="nav__idx">04</span><span class="nav__label">Contact</span></a></li>
+        <li><a class="nav__link" href="#identity" data-nav="identity">About</a></li>
+        <li><a class="nav__link" href="#archive" data-nav="archive">Projects</a></li>
+        <li><a class="nav__link" href="#lab" data-nav="lab">Lab</a></li>
+        <li><a class="nav__link" href="#contact" data-nav="contact">Contact</a></li>
       </ol>
     </nav>
   </header>
@@ -58,35 +57,24 @@
   <main id="main" tabindex="-1">
     <!-- Hero -->
     <section class="hero" id="top" aria-labelledby="hero-title">
-      <p class="hero__label mono reveal">
-        <span class="dot dot--live" aria-hidden="true"></span>
-        <span id="hero-label">Creative technologist / digital explorer</span>
-      </p>
-
       <h1 class="hero__title" id="hero-title">
-        <span class="hero__line"><span class="hero__word" data-scramble>BADER</span></span>
-        <span class="hero__line"><span class="hero__word" data-scramble>ALSAQR</span></span>
+        <span class="hero__line"><span class="hero__word">BADER</span></span>
+        <span class="hero__line"><span class="hero__word">ALSAQR</span></span>
       </h1>
 
       <div class="hero__intro reveal">
-        <p class="hero__tagline">Beyond the <em>interface.</em></p>
-        <p class="hero__copy">I explore the intersection of technology, design, and digital experimentation, turning ambitious ideas into interactive experiences.<span class="cursor" aria-hidden="true"></span></p>
+        <p class="hero__tagline">Beyond the interface.</p>
+        <p class="hero__copy">I explore the intersection of technology, design, and digital experimentation, turning ambitious ideas into interactive experiences.</p>
       </div>
-
-      <p class="hero__status mono reveal" aria-label="Local time">
-        <span class="c-accent">online</span>
-        <time id="status-clock">--:--:--</time>
-        <span id="status-zone"></span>
-      </p>
     </section>
 
     <!-- 01 Identity -->
     <section class="identity section" id="identity" aria-labelledby="identity-title" data-section>
       <header class="section__head">
-        <p class="section__idx mono">01 / Identity</p>
+        <p class="section__idx mono">About</p>
         <h2 class="section__title" id="identity-title">
           <span class="identity__ar" lang="ar" dir="rtl" data-name-ar>بدر الصقر</span>
-          <span class="identity__en mono" data-name>Bader Alsaqr</span>
+          <span class="identity__en mono"><span data-name>Bader Alsaqr</span> · <span id="hero-label">Creative technologist / digital explorer</span></span>
         </h2>
       </header>
 
@@ -99,8 +87,6 @@
         </div>
 
         <div class="record__side">
-          <p class="direction reveal" id="profile-direction"></p>
-
           <figure class="portrait reveal" id="portrait">
             <div class="portrait__frame">
               <div class="portrait__empty" id="portrait-empty">
@@ -118,22 +104,18 @@
 
     <!-- 02 Work -->
     <section class="archive section" id="archive" aria-labelledby="archive-title" data-section>
-      <header class="section__head section__head--split">
-        <div>
-          <p class="section__idx mono">02 / Work</p>
-          <h2 class="section__title" id="archive-title" data-scramble>ARCHIVE</h2>
-        </div>
-        <div class="filters mono" role="group" aria-label="Filter work by category" id="filters"></div>
+      <header class="section__head">
+        <p class="section__idx mono">Projects</p>
+        <h2 class="section__title" id="archive-title">SELECTED WORK</h2>
       </header>
       <ol class="ops" id="ops"></ol>
-      <p class="archive__note mono" id="archive-count" aria-live="polite"></p>
     </section>
 
     <!-- 03 Lab -->
     <section class="lab section" id="lab" aria-labelledby="lab-title" data-section>
       <header class="section__head">
-        <p class="section__idx mono">03 / Lab</p>
-        <h2 class="section__title" id="lab-title" data-scramble>THE LAB</h2>
+        <p class="section__idx mono">Lab</p>
+        <h2 class="section__title" id="lab-title">EXPERIMENTS</h2>
         <p class="section__lede">Two small instruments. Both run entirely in your browser.</p>
       </header>
 
@@ -164,10 +146,9 @@
 
     <!-- 04 Contact -->
     <section class="contact section" id="contact" aria-labelledby="contact-title" data-section>
-      <p class="section__idx mono">04 / Contact</p>
       <h2 class="contact__title" id="contact-title">
         <span class="contact__line mono">Connection request available.</span>
-        <span class="contact__big" data-scramble>OPEN A CHANNEL?</span>
+        <span class="contact__big">OPEN A CHANNEL?</span>
       </h2>
       <div class="contact__body">
         <div class="contact__cta" id="contact-cta"></div>
@@ -177,9 +158,8 @@
   </main>
 
   <footer class="footer mono" id="footer">
-    <span class="footer__standby"><span class="dot dot--idle" aria-hidden="true"></span><span id="standby-text">System active</span></span>
     <span><span data-name>Bader Alsaqr</span> · <span lang="ar" dir="rtl" data-name-ar>بدر الصقر</span></span>
-    <a href="#top" class="footer__top">Back to top ↑</a>
+    <a href="#top" class="footer__top">Back to top</a>
   </footer>
 
   <!-- Case file -->

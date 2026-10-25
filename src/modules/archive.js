@@ -10,10 +10,8 @@ const STATUS = {
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-export function initArchive({ onFilter } = {}) {
+export function initArchive() {
   const list = document.getElementById('ops');
-  const filters = document.getElementById('filters');
-  const count = document.getElementById('archive-count');
   const dialog = document.getElementById('case');
   let lastTrigger = null;
 
@@ -37,34 +35,6 @@ export function initArchive({ onFilter } = {}) {
       </li>`;
     })
     .join('');
-
-  // Filters built from the categories that actually exist
-  const cats = ['ALL', ...new Set(projects.map((p) => p.category))];
-  filters.innerHTML = cats
-    .map((c) => {
-      const n = c === 'ALL' ? projects.length : projects.filter((p) => p.category === c).length;
-      const label = c === 'ALL' ? 'All' : c.replace(/_/g, ' ').toLowerCase();
-      return `<button type="button" class="filter" data-filter="${esc(c)}" aria-pressed="${c === 'ALL'}">${esc(label)} (${n})</button>`;
-    })
-    .join('');
-
-  function applyFilter(cat) {
-    let shown = 0;
-    list.querySelectorAll('.op').forEach((li) => {
-      const on = cat === 'ALL' || li.dataset.cat === cat;
-      li.classList.toggle('is-hidden', !on);
-      if (on) shown++;
-    });
-    filters.querySelectorAll('.filter').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === cat)));
-    const reserved = projects.filter((p) => p.status === 'PLACEHOLDER').length;
-    count.textContent = `${shown} of ${projects.length} shown.` + (reserved ? ` ${reserved} reserved ${reserved === 1 ? 'slot waits' : 'slots wait'} for future projects.` : '');
-    onFilter?.();
-  }
-  filters.addEventListener('click', (e) => {
-    const b = e.target.closest('.filter');
-    if (b) applyFilter(b.dataset.filter);
-  });
-  applyFilter('ALL');
 
   // Case file dialog
   function open(id, trigger) {

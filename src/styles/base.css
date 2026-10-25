@@ -19,8 +19,8 @@
 /* ── Design tokens ─────────────────────────────────────────── */
 :root {
   /* canvas & surfaces: tinted toward phosphor, never pure black */
-  --canvas: #060907;
-  --canvas-2: #0a0f0c;
+  --canvas: #000000;
+  --canvas-2: #050706;
   --panel: rgba(12, 19, 15, 0.72);
   --panel-solid: #0c130f;
 
