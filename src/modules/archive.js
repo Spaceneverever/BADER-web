@@ -1,0 +1,88 @@
+import { projects } from '../data/content.js';
+import { projectVisual } from './visuals.js';
+
+const STATUS = {
+  LIVE_ON_SITE: { cls: 'c-accent', text: 'Runs on this site' },
+  PLACEHOLDER: { cls: 'op__reserved', text: 'Reserved slot' },
+  PUBLISHED: { cls: '', text: 'Published' },
+};
+
+const esc = (s) =>
+  String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+export function initArchive() {
+  const list = document.getElementById('ops');
+  const dialog = document.getElementById('case');
+  let lastTrigger = null;
+
+  // Entries: a quiet list. Detail lives in the case file.
+  list.innerHTML = projects
+    .map((p) => {
+      const hold = p.status === 'PLACEHOLDER';
+      return `<li class="op ${hold ? 'op--placeholder' : ''} reveal" data-cat="${esc(p.category)}">
+        <button type="button" class="op__btn" data-op="${esc(p.id)}" aria-haspopup="dialog">
+          <span class="op__id">${esc(p.id)}</span>
+          <span class="op__main">
+            <span class="op__title">${esc(p.title)}</span>
+            <span class="op__sum">${esc(p.summary)}</span>
+          </span>
+          <span class="op__cat">
+            <span>${esc(p.category.replace(/_/g, ' '))}</span>
+            ${hold ? '<span class="op__reserved">Reserved slot</span>' : `<span class="op__stack">${p.stack.map(esc).join(' · ')}</span>`}
+          </span>
+          <span class="op__go" aria-hidden="true">→</span>
+        </button>
+      </li>`;
+    })
+    .join('');
+
+  // Case file dialog
+  function open(id, trigger) {
+    const p = projects.find((x) => x.id.toLowerCase() === String(id).toLowerCase());
+    if (!p) return false;
+    const st = STATUS[p.status] || STATUS.PLACEHOLDER;
+    lastTrigger = trigger || document.activeElement;
+    document.getElementById('case-id').textContent = `${p.id}`;
+    document.getElementById('case-visual').innerHTML = projectVisual(p.visual, projects.indexOf(p) * 97 + 13);
+    document.getElementById('case-cat').textContent = p.category.replace(/_/g, ' ');
+    document.getElementById('case-title').textContent = p.title;
+    document.getElementById('case-summary').textContent = p.summary;
+    document.getElementById('case-meta').innerHTML = `
+      <div><dt>Status</dt><dd class="${st.cls}">${st.text}</dd></div>
+      <div><dt>Stack</dt><dd>${p.stack.map(esc).join(', ')}</dd></div>
+      `;
+    document.getElementById('case-brief').textContent = p.brief;
+    document.getElementById('case-notes').innerHTML = p.notes.map((n) => `<li>${esc(n)}</li>`).join('');
+    const actions = document.getElementById('case-actions');
+    if (p.link) {
+      const ext = /^https?:/.test(p.link.href);
+      actions.innerHTML = `<a class="btn btn--solid" href="${esc(p.link.href)}" ${ext ? 'target="_blank" rel="noopener noreferrer"' : 'data-close'}>${esc(p.link.label)} <span aria-hidden="true">${ext ? '↗' : '→'}</span></a>`;
+    } else {
+      actions.innerHTML = `<p class="case__pending">No public build yet. This slot is waiting for a real project.</p>`;
+    }
+    dialog.showModal();
+    document.getElementById('case-close').focus();
+    return true;
+  }
+  function close() {
+    if (dialog.open) dialog.close();
+  }
+  dialog.addEventListener('close', () => {
+    if (lastTrigger && document.contains(lastTrigger)) lastTrigger.focus({ preventScroll: true });
+  });
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) close(); // backdrop
+    const link = e.target.closest('[data-close]');
+    if (link) {
+      lastTrigger = null;
+      close();
+    }
+  });
+  document.getElementById('case-close').addEventListener('click', close);
+  list.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-op]');
+    if (b) open(b.dataset.op, b);
+  });
+
+  return { open, list: () => projects };
+}
