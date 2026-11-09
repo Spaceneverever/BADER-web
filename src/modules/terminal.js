@@ -5,7 +5,7 @@ import { identity, profile, contact, projects } from '../data/content.js';
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-const SECTIONS = ['top', 'identity', 'skills', 'topics', 'reading', 'archive', 'lab', 'contact'];
+const SECTIONS = ['top', 'identity', 'skills', 'topics', 'reading', 'library', 'archive', 'lab', 'contact'];
 
 export function initTerminal({ openCase, goTo }) {
   const out = document.getElementById('term-out');

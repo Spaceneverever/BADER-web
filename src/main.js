@@ -7,7 +7,7 @@ import './styles/sections.css';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { identity, profile, contact, skills, topics, reading } from './data/content.js';
+import { identity, profile, contact, skills, topics, reading, library } from './data/content.js';
 import { runBoot } from './modules/boot.js';
 import { initArchive } from './modules/archive.js';
 import { initTerminal } from './modules/terminal.js';
@@ -60,6 +60,37 @@ function renderContent() {
   const ribbonWords = skills.groups.flatMap((g) => g.using);
   const ribbonRun = ribbonWords.map((w) => `<span>${esc(w)}</span><i>✦</i>`).join('');
   $('#ribbon').innerHTML = `<div class="ribbon__run">${ribbonRun}</div><div class="ribbon__run">${ribbonRun}</div>`;
+
+  // Library: spines on a shelf; each opens to its cover.
+  const TONES = ['#0c1a12', '#10241a', '#0a140f', '#13301f', '#0e1c15', '#16382a'];
+  let n = 0;
+  $('#shelves').innerHTML = library
+    .map((rack, ri) => {
+      const books = rack.books
+        .map((b, i) => {
+          n += 1;
+          const h = 330 + ((n * 37) % 70);
+          const w = 62 + ((b.title.length * 7) % 22);
+          const tone = TONES[(n * 5) % TONES.length];
+          const kind = `${b.doc ? 'Framework' : 'Book'}${b.year ? ` · ${esc(b.year)}` : ''}`;
+          const inner = `
+            <span class="vol__spine"><span class="vol__no mono">${String(n).padStart(2, '0')}</span><span class="vol__st">${esc(b.title)}</span><span class="vol__sa mono">${esc(b.author)}</span></span>
+            <span class="vol__cover">
+              <span class="vol__kind mono">${kind}</span>
+              <span class="vol__ct">${esc(b.title)}</span>
+              <span class="vol__ca">${esc(b.author)}</span>
+              <span class="vol__note">${esc(b.note)}</span>
+              ${b.url ? '<span class="vol__go mono">Open <span aria-hidden="true">↗</span></span>' : ''}
+            </span>`;
+          const tag = b.url
+            ? `<a class="vol__a" href="${esc(b.url)}" target="_blank" rel="noopener" aria-label="${esc(b.title)} by ${esc(b.author)}, opens in a new tab">${inner}</a>`
+            : `<div class="vol__a" tabindex="0" aria-label="${esc(b.title)} by ${esc(b.author)}">${inner}</div>`;
+          return `<li class="vol${b.doc ? ' vol--doc' : ''}${i === 0 ? ' is-open' : ''}" style="--h:${h}px;--w:${w}px;--tone:${tone}">${tag}</li>`;
+        })
+        .join('');
+      return `<div class="rack reveal"><p class="rack__name mono"><span>Shelf ${String(ri + 1).padStart(2, '0')}</span>${esc(rack.name)}</p><ul class="rack__books">${books}</ul></div>`;
+    })
+    .join('');
 
   // Reading list
   $('#shelf').innerHTML = reading
@@ -284,6 +315,19 @@ function initShelf() {
   shelf.addEventListener('click', (e) => { if (moved) { e.preventDefault(); moved = false; } }, true);
 }
 
+// Library: pointing at or focusing a book opens it; one open book per shelf.
+function initLibrary() {
+  document.querySelectorAll('.rack__books').forEach((rack) => {
+    const open = (vol) => {
+      if (!vol || vol.classList.contains('is-open')) return;
+      rack.querySelectorAll('.vol.is-open').forEach((v) => v.classList.remove('is-open'));
+      vol.classList.add('is-open');
+    };
+    rack.addEventListener('pointerover', (e) => { if (e.pointerType === 'mouse') open(e.target.closest('.vol')); });
+    rack.addEventListener('focusin', (e) => open(e.target.closest('.vol')));
+  });
+}
+
 function initReveals() {
   if (reducedMotion.value) {
     root.classList.add('reveals-done');
@@ -303,6 +347,7 @@ const CORE_STATES = {
   skills:   { x: 0.56, y: 0.0,   scale: 1.02, distort: 0.2,  freq: 1.5,  shell: 0.3,  spread: 1.15, glow: 1.0, opacity: 0.95, spin: 0.6 },
   topics:   { x: -0.62, y: 0.04, scale: 0.9,  distort: 0.26, freq: 2.0,  shell: 0.24, spread: 1.4,  glow: 0.85, opacity: 0.8, spin: 0.45 },
   reading:  { x: 0.0,  y: 0.62,  scale: 0.5,  distort: 0.3,  freq: 2.4,  shell: 0.2,  spread: 1.6,  glow: 0.8, opacity: 0.45, spin: 0.8 },
+  library:  { x: -0.66, y: 0.36, scale: 0.55, distort: 0.22, freq: 1.8, shell: 0.2,  spread: 1.3,  glow: 0.7, opacity: 0.4, spin: 0.4 },
   archive:  { x: -0.7, y: 0.25,  scale: 1.35, distort: 0.3,  freq: 1.6,  shell: 0.1,  spread: 1.6,  glow: 0.6, opacity: 0.14, spin: 0.5 },
   lab:      { x: 0.0,  y: 0.0,   scale: 0.62, distort: 0.55, freq: 3.2,  shell: 0.28, spread: 0.85, glow: 1.0, opacity: 0.3,  spin: 1.6 },
   contact:  { x: 0.62, y: 0.1,   scale: 0.62, distort: 0.08, freq: 1.0,  shell: 0.22, spread: 1.1,  glow: 0.6, opacity: 0.4,  spin: 0.3 },
@@ -311,7 +356,7 @@ const CORE_STATES = {
 function initCoreScroll() {
   if (!core) return;
   Object.assign(core.state, CORE_STATES.top);
-  const order = ['identity', 'skills', 'topics', 'reading', 'archive', 'lab', 'contact'];
+  const order = ['identity', 'skills', 'topics', 'reading', 'library', 'archive', 'lab', 'contact'];
   order.forEach((id, i) => {
     const prev = i === 0 ? 'top' : order[i - 1];
     const el = document.getElementById(id);
@@ -371,6 +416,7 @@ function main() {
   renderContent();
   initTopicGlow();
   initShelf();
+  initLibrary();
   initNav();
 
   const archive = initArchive();

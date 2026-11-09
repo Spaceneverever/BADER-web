@@ -294,3 +294,31 @@ export const reading = [
     note: 'Practical habits for working with an AI coding agent day to day.',
   },
 ];
+
+// Library: books and governance documents worth keeping on the shelf.
+// url: null keeps a book on the shelf without a link (no checked page for it yet).
+export const library = [
+  {
+    name: 'Artificial intelligence',
+    books: [
+      { title: 'Human Compatible', author: 'Stuart Russell', year: '2019', url: 'https://en.wikipedia.org/wiki/Human_Compatible', note: 'How to build AI that stays on our side, by design.' },
+      { title: 'The Alignment Problem', author: 'Brian Christian', year: '2020', url: 'https://en.wikipedia.org/wiki/The_Alignment_Problem', note: 'Why teaching machines our values is harder than it looks.' },
+      { title: 'Life 3.0', author: 'Max Tegmark', year: '2017', url: 'https://en.wikipedia.org/wiki/Life_3.0', note: 'The big questions once intelligence is no longer only human.' },
+      { title: 'Deep Learning', author: 'Goodfellow, Bengio & Courville', year: '2016', url: 'https://www.deeplearningbook.org/', note: 'The foundations of modern AI, free to read online.' },
+      { title: 'Artificial Intelligence: A Modern Approach', author: 'Russell & Norvig', year: '2020', url: 'https://aima.cs.berkeley.edu/', note: 'The standard textbook of the field, now in its fourth edition.' },
+    ],
+  },
+  {
+    name: 'Governance & ethics',
+    books: [
+      { title: 'The Age of AI', author: 'Kissinger, Schmidt & Huttenlocher', year: '2021', url: null, note: 'What AI means for knowledge, power and the people who govern.' },
+      { title: 'The Coming Wave', author: 'Mustafa Suleyman', year: '2023', url: 'https://en.wikipedia.org/wiki/Mustafa_Suleyman', note: 'A builder of AI on why powerful technology must be contained.' },
+      { title: 'Atlas of AI', author: 'Kate Crawford', year: '2021', url: 'https://en.wikipedia.org/wiki/Atlas_of_AI', note: 'The hidden costs behind AI: data, labour and the planet.' },
+      { title: 'Weapons of Math Destruction', author: "Cathy O'Neil", year: '2016', url: 'https://en.wikipedia.org/wiki/Weapons_of_Math_Destruction', note: 'How unchecked algorithms can deepen inequality.' },
+      { title: 'AI Ethics Principles', author: 'SDAIA · Saudi Arabia', year: null, url: 'https://sdaia.gov.sa/', note: "Saudi Arabia's national principles for responsible AI.", doc: true },
+      { title: 'AI Risk Management Framework', author: 'NIST', year: '2023', url: 'https://www.nist.gov/itl/ai-risk-management-framework', note: 'A practical framework for finding and managing AI risk.', doc: true },
+      { title: 'EU Artificial Intelligence Act', author: 'European Union', year: '2024', url: 'https://eur-lex.europa.eu/eli/reg/2024/1689/oj', note: 'The first broad law that regulates AI by level of risk.', doc: true },
+      { title: 'OECD AI Principles', author: 'OECD', year: '2019', url: 'https://oecd.ai/en/ai-principles', note: 'The first intergovernmental standard for trustworthy AI.', doc: true },
+    ],
+  },
+];
