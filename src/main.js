@@ -7,7 +7,7 @@ import './styles/sections.css';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { identity, profile, contact, skills, topics } from './data/content.js';
+import { identity, profile, contact, skills, topics, reading } from './data/content.js';
 import { runBoot } from './modules/boot.js';
 import { initArchive } from './modules/archive.js';
 import { initTerminal } from './modules/terminal.js';
@@ -49,6 +49,32 @@ function renderContent() {
   $$('[data-name-ar]').forEach((el) => { el.textContent = identity.nameAr; });
   document.title = `${identity.name} · ${identity.nameAr}`;
   $('#profile-summary').textContent = profile.summary;
+  $('#story').innerHTML = (profile.story || []).map((p) => `<p class="story__p reveal">${esc(p)}</p>`).join('');
+
+  $('#awards').innerHTML = (profile.recognition || [])
+    .map((a) => `<li class="award reveal"><span class="award__y mono">${esc(a.year)}</span><span class="award__t">${esc(a.title)}</span><span class="award__d">${esc(a.detail)}</span></li>`)
+    .join('');
+
+  // Stack ribbon: the tools I use, on a slow loop. Listed twice so the loop is seamless.
+  const ribbonWords = skills.groups.flatMap((g) => g.using);
+  const ribbonRun = ribbonWords.map((w) => `<span>${esc(w)}</span><i>✦</i>`).join('');
+  $('#ribbon').innerHTML = `<div class="ribbon__run">${ribbonRun}</div><div class="ribbon__run">${ribbonRun}</div>`;
+
+  // Reading list
+  $('#shelf').innerHTML = reading
+    .map(
+      (r, i) => `<li class="book">
+        <a class="book__a" href="${esc(r.url)}" target="_blank" rel="noopener">
+          <span class="book__no" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+          <span class="book__topic mono">${esc(r.topic)}</span>
+          <span class="book__title">${esc(r.title)}</span>
+          <span class="book__note">${esc(r.note)}</span>
+          <span class="book__src mono"><span>${esc(r.source)}${r.year ? ` · ${esc(r.year)}` : ''}</span><span class="book__go" aria-hidden="true">↗</span></span>
+          <span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </li>`
+    )
+    .join('');
   $('#interests').innerHTML = profile.interests
     .map(
       (it) => `<li class="interest reveal">
@@ -205,6 +231,68 @@ function initTopicGlow() {
   });
 }
 
+// Reading shelf: sideways scroll with snap, buttons, drag, a progress bar,
+// and a light coverflow tilt as cards move away from the center.
+function initShelf() {
+  const shelf = $('#shelf');
+  if (!shelf) return;
+  const cards = [...shelf.children];
+  const bar = $('#reading-bar');
+  const count = $('#reading-count');
+  const total = String(cards.length).padStart(2, '0');
+  const step = () => (cards[0]?.getBoundingClientRect().width || 320) + 20;
+  const go = (dir) => shelf.scrollBy({ left: dir * step(), behavior: reducedMotion.value ? 'auto' : 'smooth' });
+  $('#reading-prev').addEventListener('click', () => go(-1));
+  $('#reading-next').addEventListener('click', () => go(1));
+
+  let raf = 0;
+  const update = () => {
+    raf = 0;
+    const max = shelf.scrollWidth - shelf.clientWidth;
+    const p = max > 0 ? shelf.scrollLeft / max : 0;
+    bar.style.transform = `scaleX(${Math.max(0.04, p).toFixed(3)})`;
+    const box = shelf.getBoundingClientRect();
+    let first = 0;
+    cards.forEach((c, i) => {
+      const r = c.getBoundingClientRect();
+      if (!first && r.right > box.left + 40) first = i + 1;
+      if (reducedMotion.value) { c.style.transform = ''; return; }
+      // -1 at the left edge, 1 at the right edge of the shelf
+      const d = Math.max(-1, Math.min(1, ((r.left + r.width / 2) - (box.left + box.width / 2)) / box.width));
+      c.style.transform = `perspective(1200px) rotateY(${(-d * 7).toFixed(2)}deg) translateZ(${(-Math.abs(d) * 30).toFixed(1)}px)`;
+    });
+    count.textContent = `${String(first || 1).padStart(2, '0')} / ${total}`;
+    $('#reading-prev').disabled = shelf.scrollLeft <= 2;
+    $('#reading-next').disabled = shelf.scrollLeft >= max - 2;
+  };
+  const queue = () => { if (!raf) raf = requestAnimationFrame(update); };
+  shelf.addEventListener('scroll', queue, { passive: true });
+  window.addEventListener('resize', queue);
+  update();
+
+  // Drag to scroll with a mouse. Touch already scrolls natively.
+  let down = null;
+  let moved = false;
+  shelf.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    down = { x: e.clientX, left: shelf.scrollLeft };
+    moved = false;
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!down) return;
+    const dx = e.clientX - down.x;
+    if (Math.abs(dx) > 4) { moved = true; shelf.classList.add('is-dragging'); }
+    shelf.scrollLeft = down.left - dx;
+  });
+  window.addEventListener('pointerup', () => {
+    if (!down) return;
+    down = null;
+    shelf.classList.remove('is-dragging');
+  });
+  // A drag should not open the article under the pointer.
+  shelf.addEventListener('click', (e) => { if (moved) { e.preventDefault(); moved = false; } }, true);
+}
+
 function initReveals() {
   if (reducedMotion.value) {
     root.classList.add('reveals-done');
@@ -223,6 +311,7 @@ const CORE_STATES = {
   identity: { x: 0.74, y: -0.04, scale: 0.7, distort: 0.18, freq: 2.2,  shell: 0.34, spread: 1.3,  glow: 0.7, opacity: 0.7,  spin: 0.7 },
   skills:   { x: 0.56, y: 0.0,   scale: 1.02, distort: 0.2,  freq: 1.5,  shell: 0.3,  spread: 1.15, glow: 1.0, opacity: 0.95, spin: 0.6 },
   topics:   { x: -0.62, y: 0.04, scale: 0.9,  distort: 0.26, freq: 2.0,  shell: 0.24, spread: 1.4,  glow: 0.85, opacity: 0.8, spin: 0.45 },
+  reading:  { x: 0.0,  y: 0.62,  scale: 0.5,  distort: 0.3,  freq: 2.4,  shell: 0.2,  spread: 1.6,  glow: 0.8, opacity: 0.45, spin: 0.8 },
   archive:  { x: -0.7, y: 0.25,  scale: 1.35, distort: 0.3,  freq: 1.6,  shell: 0.1,  spread: 1.6,  glow: 0.6, opacity: 0.14, spin: 0.5 },
   lab:      { x: 0.0,  y: 0.0,   scale: 0.62, distort: 0.55, freq: 3.2,  shell: 0.28, spread: 0.85, glow: 1.0, opacity: 0.3,  spin: 1.6 },
   contact:  { x: 0.6,  y: 0.34,  scale: 0.52, distort: 0.08, freq: 1.0,  shell: 0.22, spread: 1.1,  glow: 0.8, opacity: 0.9,  spin: 0.3 },
@@ -231,7 +320,7 @@ const CORE_STATES = {
 function initCoreScroll() {
   if (!core) return;
   Object.assign(core.state, CORE_STATES.top);
-  const order = ['identity', 'skills', 'topics', 'archive', 'lab', 'contact'];
+  const order = ['identity', 'skills', 'topics', 'reading', 'archive', 'lab', 'contact'];
   order.forEach((id, i) => {
     const prev = i === 0 ? 'top' : order[i - 1];
     const el = document.getElementById(id);
@@ -290,6 +379,7 @@ async function loadCore(webgl) {
 function main() {
   renderContent();
   initTopicGlow();
+  initShelf();
   initNav();
 
   const archive = initArchive();
