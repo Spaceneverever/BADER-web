@@ -46,12 +46,9 @@ export const profile = {
 
 // Contact channels. null = not configured yet (shown as PENDING, never a dead link).
 export const contact = {
-  email: null, // 'you@example.com'
-  channels: [
-    { label: 'GITHUB', url: 'https://github.com/Spaceneverever', handle: 'Profile' },
-    { label: 'LINKEDIN', url: null, handle: null },
-    { label: 'X / TWITTER', url: null, handle: null },
-  ],
+  email: 'bader9292a@gmail.com',
+  // Extra links shown under the email. Left empty on purpose: email is the one way in.
+  channels: [],
 };
 
 // Project archive.

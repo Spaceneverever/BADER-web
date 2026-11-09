@@ -117,44 +117,34 @@ function renderContent() {
     ? `Across all four <span class="tblock__tags">${topics.shared.map((t) => `<span>${esc(t)}</span>`).join('')}</span>`
     : '';
 
-  // Contact
+  // Contact: one clear way in, the email address.
   const cta = $('#contact-cta');
   if (contact.email) {
     cta.innerHTML = `
-      <p>Send a message. It goes straight to my inbox.</p>
-      <a class="btn btn--solid" href="mailto:${esc(contact.email)}">OPEN CHANNEL <span aria-hidden="true">→</span></a>
-      <button type="button" class="btn" id="copy-email">COPY ADDRESS</button>
-      <span class="contact__copy-state" id="copy-state" aria-live="polite"></span>`;
+      <p class="contact__label mono">Contact Email</p>
+      <a class="contact__mail" href="mailto:${esc(contact.email)}">${esc(contact.email)}<span class="contact__arrow" aria-hidden="true">↗</span></a>
+      <div class="contact__row">
+        <a class="btn btn--solid" href="mailto:${esc(contact.email)}">Send an email <span aria-hidden="true">→</span></a>
+        <button type="button" class="btn" id="copy-email">Copy address</button>
+        <span class="contact__copy-state mono" id="copy-state" aria-live="polite"></span>
+      </div>`;
     $('#copy-email').addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(contact.email);
-        $('#copy-state').textContent = `COPIED: ${contact.email}`;
+        $('#copy-state').textContent = 'Copied';
       } catch {
         $('#copy-state').textContent = contact.email;
       }
     });
   } else {
-    const gh = contact.channels.find((c) => c.url);
-    cta.innerHTML = `
-      <p>Email is not set up yet. GitHub is the open line for now.</p>
-      ${gh ? `<a class="btn btn--solid" href="${esc(gh.url)}" target="_blank" rel="noopener noreferrer">OPEN CHANNEL · ${esc(gh.label)} <span aria-hidden="true">↗</span></a>` : ''}`;
+    cta.innerHTML = '<p>Email is not set up yet.</p>';
   }
-  const rows = [];
-  rows.push(
-    contact.email
-      ? { label: 'EMAIL', url: `mailto:${contact.email}`, handle: contact.email, ext: false }
-      : { label: 'EMAIL', url: null }
-  );
-  contact.channels.forEach((c) => rows.push({ ...c, ext: true }));
-  $('#channels').innerHTML = rows
-    .map((r) => {
-      if (!r.url) {
-        return `<li><div class="channel__pending"><span>${esc(r.label)}</span><span class="channel__h">pending</span></div></li>`;
-      }
-      const ext = r.ext ? ' target="_blank" rel="noopener noreferrer"' : '';
-      return `<li><a class="channel__a" href="${esc(r.url)}"${ext}><span>${esc(r.label)}</span><span class="channel__h">${esc(r.handle || '')} <span aria-hidden="true">${r.ext ? '↗' : '→'}</span></span></a></li>`;
-    })
+  const list = $('#channels');
+  list.innerHTML = contact.channels
+    .filter((c) => c.url)
+    .map((c) => `<li><a class="channel__a" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer"><span>${esc(c.label)}</span><span class="channel__h">${esc(c.handle || '')} <span aria-hidden="true">↗</span></span></a></li>`)
     .join('');
+  list.hidden = !list.children.length;
 }
 
 // ── Navigation ──────────────────────────────────────────────

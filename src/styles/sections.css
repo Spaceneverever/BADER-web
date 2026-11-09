@@ -488,6 +488,33 @@ main, .footer { position: relative; z-index: 10; }
   .book__a, .book__a::before, .book__go { transition: none; }
 }
 
+/* ── Contact email ─────────────────────────────────────────── */
+.contact__body:has(.channels[hidden]) { grid-template-columns: minmax(0, 1fr); }
+.contact__cta { gap: 22px; }
+.contact__label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--phosphor); }
+.contact__mail {
+  position: relative;
+  display: inline-flex; align-items: baseline; gap: 0.3em;
+  max-width: 100%;
+  font-family: var(--f-display); font-weight: 600; font-stretch: 110%;
+  font-size: clamp(24px, 4.6vw, 64px); line-height: 1.05; letter-spacing: -0.02em;
+  color: var(--white-cold);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: color 0.4s;
+}
+.contact__mail::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px;
+  background: var(--phosphor); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.9s var(--ease-out);
+}
+.contact__mail:hover, .contact__mail:focus-visible { color: var(--phosphor-hot); outline: none; }
+.contact__mail:hover::after, .contact__mail:focus-visible::after { transform: scaleX(1); }
+.contact__arrow { font-size: 0.5em; color: var(--phosphor); transition: transform 0.5s var(--ease-out); }
+.contact__mail:hover .contact__arrow { transform: translate(4px, -4px); }
+.contact__row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 14px; margin-top: 10px; }
+.contact__row .btn { min-height: 48px; padding: 0 22px; }
+
 /* ── Work ──────────────────────────────────────────────────── */
 .ops { border-top: 1px solid var(--line); }
 .op { border-bottom: 1px solid var(--line); }
