@@ -18,8 +18,21 @@ export const identity = {
 };
 
 export const profile = {
+  // The large opening line of the About section.
   summary:
-    'A technology-focused creative. I spend my time building for the web, testing interaction ideas, and learning the tools that shape how people use screens.',
+    'I build where software, AI and design meet, and I care about the details that make technology feel effortless.',
+  // The longer story under it. One string per paragraph. Facts only: edit freely.
+  story: [
+    'My work sits across information technology and artificial intelligence. I specialise in developing hospital and healthcare systems, and in 2025 I delivered the AI-supported system for Doha Clinic. Alongside that I build full-stack web applications and AI-powered interfaces: I have built an AI chat dashboard that talks to large language models, a management system on TypeScript, Express and PostgreSQL, and React apps backed by Supabase. This site, with its real-time 3D core, is one of them.',
+    'Much of my time goes into how AI is changing the craft itself: agents that plan and use tools, open multimodal models, and AI-assisted development. I test these tools in my own workflow and keep only what holds up.',
+    'Security comes with the territory. As AI systems gain access to data and tools, I follow how teams audit them, protect them, and keep people in control. That is the standard I hold my own work to.',
+  ],
+  // Awards and milestones, in my own words. Newest first.
+  recognition: [
+    { year: '2025', title: 'Doha Clinic', detail: 'Hospital systems development specialist. Delivered the Doha Clinic system, supported by AI.' },
+    { year: '2024', title: 'IT Consultant Award', detail: 'University of Toronto, for technical consulting skills.' },
+    { year: '2018', title: 'First place, speed writing', detail: 'Accredited by Harvard University.' },
+  ],
   interests: [
     { key: 'WEB_DEVELOPMENT', note: 'Building sites and small tools that load fast and hold up on any screen.' },
     { key: 'INTERACTIVE_DESIGN', note: 'Interfaces that respond to the person using them, with motion that explains.' },
@@ -33,12 +46,9 @@ export const profile = {
 
 // Contact channels. null = not configured yet (shown as PENDING, never a dead link).
 export const contact = {
-  email: null, // 'you@example.com'
-  channels: [
-    { label: 'GITHUB', url: 'https://github.com/Spaceneverever', handle: '@Spaceneverever' },
-    { label: 'LINKEDIN', url: null, handle: null },
-    { label: 'X / TWITTER', url: null, handle: null },
-  ],
+  email: 'bader9292a@gmail.com',
+  // Extra links shown under the email. Left empty on purpose: email is the one way in.
+  channels: [],
 };
 
 // Project archive.
@@ -199,3 +209,116 @@ export const topics = {
   // Shared across every theme above, so not tied to one repository.
   shared: ['open-source'],
 };
+
+// Reading list: articles and papers worth your time. Every link was checked when added.
+// note is my own one-line reason to read it.
+export const reading = [
+  {
+    title: 'Building effective agents',
+    source: 'Anthropic',
+    year: '2024',
+    topic: 'Agents',
+    url: 'https://www.anthropic.com/research/building-effective-agents',
+    note: 'The clearest case for simple, composable agent patterns over heavy frameworks.',
+  },
+  {
+    title: 'LLM Powered Autonomous Agents',
+    source: "Lilian Weng · Lil'Log",
+    year: '2023',
+    topic: 'Agents',
+    url: 'https://lilianweng.github.io/posts/2023-06-23-agent/',
+    note: 'The map everyone still uses: planning, memory and tool use, explained end to end.',
+  },
+  {
+    title: 'ReAct: Synergizing Reasoning and Acting in Language Models',
+    source: 'Yao et al. · arXiv',
+    year: '2022',
+    topic: 'Research',
+    url: 'https://arxiv.org/abs/2210.03629',
+    note: 'The paper behind the think, act, observe loop inside most modern agents.',
+  },
+  {
+    title: 'Effective context engineering for AI agents',
+    source: 'Anthropic',
+    year: '2025',
+    topic: 'Agents',
+    url: 'https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents',
+    note: 'Why what you put in front of a model matters as much as the model itself.',
+  },
+  {
+    title: 'The lethal trifecta for AI agents',
+    source: 'Simon Willison',
+    year: '2025',
+    topic: 'Security',
+    url: 'https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/',
+    note: 'Private data, untrusted content and outside access: the combination to never ship.',
+  },
+  {
+    title: 'Build your own vulnerability harness',
+    source: 'Cloudflare Blog',
+    year: '2026',
+    topic: 'Security',
+    url: 'https://blog.cloudflare.com/build-your-own-vulnerability-harness',
+    note: 'How AI agents find, verify and triage real vulnerabilities at scale.',
+  },
+  {
+    title: 'Qwen2.5-Omni: See, Hear, Talk, Write, Do It All',
+    source: 'Qwen Team',
+    year: '2025',
+    topic: 'Multimodal',
+    url: 'https://qwenlm.github.io/blog/qwen2.5-omni/',
+    note: 'One open model that takes text, images, audio and video, and answers in speech.',
+  },
+  {
+    title: 'What is the Model Context Protocol?',
+    source: 'Model Context Protocol',
+    year: null,
+    topic: 'Tools',
+    url: 'https://modelcontextprotocol.io/introduction',
+    note: 'The open standard that lets AI apps plug into tools and data, like USB-C for AI.',
+  },
+  {
+    title: 'The Illustrated Transformer',
+    source: 'Jay Alammar',
+    year: '2018',
+    topic: 'Foundations',
+    url: 'https://jalammar.github.io/illustrated-transformer/',
+    note: 'The visual explanation of attention that made transformers click for a generation.',
+  },
+  {
+    title: 'Best practices for Claude Code',
+    source: 'Anthropic',
+    year: null,
+    topic: 'Workflow',
+    url: 'https://www.anthropic.com/engineering/claude-code-best-practices',
+    note: 'Practical habits for working with an AI coding agent day to day.',
+  },
+];
+
+// Library: books and governance documents worth keeping on the shelf.
+// url: null keeps a book on the shelf without a link (no checked page for it yet).
+export const library = [
+  {
+    name: 'Artificial intelligence',
+    books: [
+      { title: 'Human Compatible', author: 'Stuart Russell', year: '2019', url: 'https://en.wikipedia.org/wiki/Human_Compatible', note: 'How to build AI that stays on our side, by design.' },
+      { title: 'The Alignment Problem', author: 'Brian Christian', year: '2020', url: 'https://en.wikipedia.org/wiki/The_Alignment_Problem', note: 'Why teaching machines our values is harder than it looks.' },
+      { title: 'Life 3.0', author: 'Max Tegmark', year: '2017', url: 'https://en.wikipedia.org/wiki/Life_3.0', note: 'The big questions once intelligence is no longer only human.' },
+      { title: 'Deep Learning', author: 'Goodfellow, Bengio & Courville', year: '2016', url: 'https://www.deeplearningbook.org/', note: 'The foundations of modern AI, free to read online.' },
+      { title: 'Artificial Intelligence: A Modern Approach', author: 'Russell & Norvig', year: '2020', url: 'https://aima.cs.berkeley.edu/', note: 'The standard textbook of the field, now in its fourth edition.' },
+    ],
+  },
+  {
+    name: 'Governance & ethics',
+    books: [
+      { title: 'The Age of AI', author: 'Kissinger, Schmidt & Huttenlocher', year: '2021', url: null, note: 'What AI means for knowledge, power and the people who govern.' },
+      { title: 'The Coming Wave', author: 'Mustafa Suleyman', year: '2023', url: 'https://en.wikipedia.org/wiki/Mustafa_Suleyman', note: 'A builder of AI on why powerful technology must be contained.' },
+      { title: 'Atlas of AI', author: 'Kate Crawford', year: '2021', url: 'https://en.wikipedia.org/wiki/Atlas_of_AI', note: 'The hidden costs behind AI: data, labour and the planet.' },
+      { title: 'Weapons of Math Destruction', author: "Cathy O'Neil", year: '2016', url: 'https://en.wikipedia.org/wiki/Weapons_of_Math_Destruction', note: 'How unchecked algorithms can deepen inequality.' },
+      { title: 'AI Ethics Principles', author: 'SDAIA · Saudi Arabia', year: null, url: 'https://sdaia.gov.sa/', note: "Saudi Arabia's national principles for responsible AI.", doc: true },
+      { title: 'AI Risk Management Framework', author: 'NIST', year: '2023', url: 'https://www.nist.gov/itl/ai-risk-management-framework', note: 'A practical framework for finding and managing AI risk.', doc: true },
+      { title: 'EU Artificial Intelligence Act', author: 'European Union', year: '2024', url: 'https://eur-lex.europa.eu/eli/reg/2024/1689/oj', note: 'The first broad law that regulates AI by level of risk.', doc: true },
+      { title: 'OECD AI Principles', author: 'OECD', year: '2019', url: 'https://oecd.ai/en/ai-principles', note: 'The first intergovernmental standard for trustworthy AI.', doc: true },
+    ],
+  },
+];

@@ -48,6 +48,7 @@
       <ol class="nav__list">
         <li><a class="nav__link" href="#identity" data-nav="identity">About</a></li>
         <li><a class="nav__link" href="#skills" data-nav="skills">Skills</a></li>
+        <li><a class="nav__link" href="#reading" data-nav="reading">Reading</a></li>
         <li><a class="nav__link" href="#archive" data-nav="archive">Projects</a></li>
         <li><a class="nav__link" href="#lab" data-nav="lab">Lab</a></li>
         <li><a class="nav__link" href="#contact" data-nav="contact">Contact</a></li>
@@ -67,8 +68,15 @@
       <div class="hero__intro reveal">
         <p class="hero__tagline">Beyond the interface.</p>
         <p class="hero__copy">I explore the intersection of technology, design, and digital experimentation, turning ambitious ideas into interactive experiences.</p>
+        <div class="hero__actions">
+          <a class="btn btn--solid" href="#archive">See my work <span aria-hidden="true">→</span></a>
+          <a class="btn btn--ghost" href="#reading">Reading list</a>
+        </div>
       </div>
     </section>
+
+    <!-- Stack ribbon -->
+    <div class="ribbon" aria-hidden="true"><div class="ribbon__track mono" id="ribbon"></div></div>
 
     <!-- 01 Identity -->
     <section class="identity section" id="identity" aria-labelledby="identity-title" data-section>
@@ -83,6 +91,9 @@
       <div class="record">
         <div class="record__main">
           <p class="record__summary reveal" id="profile-summary"></p>
+          <div class="story" id="story"></div>
+          <h3 class="record__label mono reveal">Recognition</h3>
+          <ol class="awards" id="awards"></ol>
           <h3 class="record__label mono reveal">Current interests</h3>
           <ul class="interests" id="interests"></ul>
           <p class="record__note mono reveal">Areas of interest and exploration, not certified expertise.</p>
@@ -127,6 +138,34 @@
         <p class="topics__shared mono reveal" id="topics-shared"></p>
         <p class="topics__note mono reveal">Open-source projects I follow and learn from, not ones I built.</p>
       </div>
+    </section>
+
+    <!-- Reading list -->
+    <section class="reading section" id="reading" aria-labelledby="reading-title" data-section>
+      <header class="section__head reading__head reveal">
+        <div>
+          <p class="section__idx mono">Reading</p>
+          <h2 class="section__title" id="reading-title">THE BEST<br />OF WHAT I READ</h2>
+          <p class="section__lede">Articles and papers that shaped how I think about AI, agents and security.</p>
+        </div>
+        <div class="reading__nav mono">
+          <span class="reading__count" id="reading-count" aria-hidden="true">01 / 10</span>
+          <button type="button" class="reading__btn" id="reading-prev" aria-label="Previous articles">←</button>
+          <button type="button" class="reading__btn" id="reading-next" aria-label="Next articles">→</button>
+        </div>
+      </header>
+      <ol class="shelf" id="shelf" tabindex="0" aria-label="Reading list, scroll sideways"></ol>
+      <div class="reading__bar" aria-hidden="true"><span id="reading-bar"></span></div>
+    </section>
+
+    <!-- Library -->
+    <section class="library section" id="library" aria-labelledby="library-title" data-section>
+      <header class="section__head library__head reveal">
+        <p class="section__idx mono">Library</p>
+        <h2 class="section__title" id="library-title">THE SHELF</h2>
+        <p class="section__lede">Books and frameworks on AI and how it should be governed. Point at a spine to open it.</p>
+      </header>
+      <div class="library__shelves" id="shelves"></div>
     </section>
 
     <!-- 02 Work -->
@@ -177,6 +216,10 @@
         <span class="contact__line mono">Connection request available.</span>
         <span class="contact__big">OPEN A CHANNEL?</span>
       </h2>
+      <figure class="falcon" aria-hidden="true">
+        <canvas class="falcon__canvas" id="falcon"></canvas>
+        <figcaption class="falcon__cap mono">الصقر · the falcon</figcaption>
+      </figure>
       <div class="contact__body">
         <div class="contact__cta" id="contact-cta"></div>
         <ul class="channels mono" id="channels"></ul>
@@ -209,7 +252,7 @@
 
   <noscript>
     <style>.reveal{opacity:1!important;transform:none!important}</style>
-    <p class="noscript mono">JavaScript is off. The 3D core, terminal, and project list need it. GitHub: @Spaceneverever.</p>
+    <p class="noscript mono">JavaScript is off. The 3D core, terminal, and project list need it. </p>
   </noscript>
 
   <script type="module" src="/src/main.js"></script>

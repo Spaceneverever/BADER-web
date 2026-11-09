@@ -7,11 +7,12 @@ import './styles/sections.css';
 
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { identity, profile, contact, skills, topics } from './data/content.js';
+import { identity, profile, contact, skills, topics, reading, library } from './data/content.js';
 import { runBoot } from './modules/boot.js';
 import { initArchive } from './modules/archive.js';
 import { initTerminal } from './modules/terminal.js';
 import { initField } from './modules/field.js';
+import { initFalcon } from './modules/falcon.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,6 +50,63 @@ function renderContent() {
   $$('[data-name-ar]').forEach((el) => { el.textContent = identity.nameAr; });
   document.title = `${identity.name} · ${identity.nameAr}`;
   $('#profile-summary').textContent = profile.summary;
+  $('#story').innerHTML = (profile.story || []).map((p) => `<p class="story__p reveal">${esc(p)}</p>`).join('');
+
+  $('#awards').innerHTML = (profile.recognition || [])
+    .map((a) => `<li class="award reveal"><span class="award__y mono">${esc(a.year)}</span><span class="award__t">${esc(a.title)}</span><span class="award__d">${esc(a.detail)}</span></li>`)
+    .join('');
+
+  // Stack ribbon: the tools I use, on a slow loop. Listed twice so the loop is seamless.
+  const ribbonWords = skills.groups.flatMap((g) => g.using);
+  const ribbonRun = ribbonWords.map((w) => `<span>${esc(w)}</span><i>✦</i>`).join('');
+  $('#ribbon').innerHTML = `<div class="ribbon__run">${ribbonRun}</div><div class="ribbon__run">${ribbonRun}</div>`;
+
+  // Library: spines on a shelf; each opens to its cover.
+  const TONES = ['#0c1a12', '#10241a', '#0a140f', '#13301f', '#0e1c15', '#16382a'];
+  let n = 0;
+  $('#shelves').innerHTML = library
+    .map((rack, ri) => {
+      const books = rack.books
+        .map((b, i) => {
+          n += 1;
+          const h = 330 + ((n * 37) % 70);
+          const w = 62 + ((b.title.length * 7) % 22);
+          const tone = TONES[(n * 5) % TONES.length];
+          const kind = `${b.doc ? 'Framework' : 'Book'}${b.year ? ` · ${esc(b.year)}` : ''}`;
+          const inner = `
+            <span class="vol__spine"><span class="vol__no mono">${String(n).padStart(2, '0')}</span><span class="vol__st">${esc(b.title)}</span><span class="vol__sa mono">${esc(b.author)}</span></span>
+            <span class="vol__cover">
+              <span class="vol__kind mono">${kind}</span>
+              <span class="vol__ct">${esc(b.title)}</span>
+              <span class="vol__ca">${esc(b.author)}</span>
+              <span class="vol__note">${esc(b.note)}</span>
+              ${b.url ? '<span class="vol__go mono">Open <span aria-hidden="true">↗</span></span>' : ''}
+            </span>`;
+          const tag = b.url
+            ? `<a class="vol__a" href="${esc(b.url)}" target="_blank" rel="noopener" aria-label="${esc(b.title)} by ${esc(b.author)}, opens in a new tab">${inner}</a>`
+            : `<div class="vol__a" tabindex="0" aria-label="${esc(b.title)} by ${esc(b.author)}">${inner}</div>`;
+          return `<li class="vol${b.doc ? ' vol--doc' : ''}${i === 0 ? ' is-open' : ''}" style="--h:${h}px;--w:${w}px;--tone:${tone}">${tag}</li>`;
+        })
+        .join('');
+      return `<div class="rack reveal"><p class="rack__name mono"><span>Shelf ${String(ri + 1).padStart(2, '0')}</span>${esc(rack.name)}</p><ul class="rack__books">${books}</ul></div>`;
+    })
+    .join('');
+
+  // Reading list
+  $('#shelf').innerHTML = reading
+    .map(
+      (r, i) => `<li class="book">
+        <a class="book__a" href="${esc(r.url)}" target="_blank" rel="noopener">
+          <span class="book__no" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+          <span class="book__topic mono">${esc(r.topic)}</span>
+          <span class="book__title">${esc(r.title)}</span>
+          <span class="book__note">${esc(r.note)}</span>
+          <span class="book__src mono"><span>${esc(r.source)}${r.year ? ` · ${esc(r.year)}` : ''}</span><span class="book__go" aria-hidden="true">↗</span></span>
+          <span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </li>`
+    )
+    .join('');
   $('#interests').innerHTML = profile.interests
     .map(
       (it) => `<li class="interest reveal">
@@ -91,44 +149,34 @@ function renderContent() {
     ? `Across all four <span class="tblock__tags">${topics.shared.map((t) => `<span>${esc(t)}</span>`).join('')}</span>`
     : '';
 
-  // Contact
+  // Contact: one clear way in, the email address.
   const cta = $('#contact-cta');
   if (contact.email) {
     cta.innerHTML = `
-      <p>Send a message. It goes straight to my inbox.</p>
-      <a class="btn btn--solid" href="mailto:${esc(contact.email)}">OPEN CHANNEL <span aria-hidden="true">→</span></a>
-      <button type="button" class="btn" id="copy-email">COPY ADDRESS</button>
-      <span class="contact__copy-state" id="copy-state" aria-live="polite"></span>`;
+      <p class="contact__label mono">Contact Email</p>
+      <a class="contact__mail" href="mailto:${esc(contact.email)}">${esc(contact.email)}<span class="contact__arrow" aria-hidden="true">↗</span></a>
+      <div class="contact__row">
+        <a class="btn btn--solid" href="mailto:${esc(contact.email)}">Send an email <span aria-hidden="true">→</span></a>
+        <button type="button" class="btn" id="copy-email">Copy address</button>
+        <span class="contact__copy-state mono" id="copy-state" aria-live="polite"></span>
+      </div>`;
     $('#copy-email').addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(contact.email);
-        $('#copy-state').textContent = `COPIED: ${contact.email}`;
+        $('#copy-state').textContent = 'Copied';
       } catch {
         $('#copy-state').textContent = contact.email;
       }
     });
   } else {
-    const gh = contact.channels.find((c) => c.url);
-    cta.innerHTML = `
-      <p>Email is not set up yet. GitHub is the open line for now.</p>
-      ${gh ? `<a class="btn btn--solid" href="${esc(gh.url)}" target="_blank" rel="noopener noreferrer">OPEN CHANNEL · ${esc(gh.label)} <span aria-hidden="true">↗</span></a>` : ''}`;
+    cta.innerHTML = '<p>Email is not set up yet.</p>';
   }
-  const rows = [];
-  rows.push(
-    contact.email
-      ? { label: 'EMAIL', url: `mailto:${contact.email}`, handle: contact.email, ext: false }
-      : { label: 'EMAIL', url: null }
-  );
-  contact.channels.forEach((c) => rows.push({ ...c, ext: true }));
-  $('#channels').innerHTML = rows
-    .map((r) => {
-      if (!r.url) {
-        return `<li><div class="channel__pending"><span>${esc(r.label)}</span><span class="channel__h">pending</span></div></li>`;
-      }
-      const ext = r.ext ? ' target="_blank" rel="noopener noreferrer"' : '';
-      return `<li><a class="channel__a" href="${esc(r.url)}"${ext}><span>${esc(r.label)}</span><span class="channel__h">${esc(r.handle || '')} <span aria-hidden="true">${r.ext ? '↗' : '→'}</span></span></a></li>`;
-    })
+  const list = $('#channels');
+  list.innerHTML = contact.channels
+    .filter((c) => c.url)
+    .map((c) => `<li><a class="channel__a" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer"><span>${esc(c.label)}</span><span class="channel__h">${esc(c.handle || '')} <span aria-hidden="true">↗</span></span></a></li>`)
     .join('');
+  list.hidden = !list.children.length;
 }
 
 // ── Navigation ──────────────────────────────────────────────
@@ -205,6 +253,81 @@ function initTopicGlow() {
   });
 }
 
+// Reading shelf: sideways scroll with snap, buttons, drag, a progress bar,
+// and a light coverflow tilt as cards move away from the center.
+function initShelf() {
+  const shelf = $('#shelf');
+  if (!shelf) return;
+  const cards = [...shelf.children];
+  const bar = $('#reading-bar');
+  const count = $('#reading-count');
+  const total = String(cards.length).padStart(2, '0');
+  const step = () => (cards[0]?.getBoundingClientRect().width || 320) + 20;
+  const go = (dir) => shelf.scrollBy({ left: dir * step(), behavior: reducedMotion.value ? 'auto' : 'smooth' });
+  $('#reading-prev').addEventListener('click', () => go(-1));
+  $('#reading-next').addEventListener('click', () => go(1));
+
+  let raf = 0;
+  const update = () => {
+    raf = 0;
+    const max = shelf.scrollWidth - shelf.clientWidth;
+    const p = max > 0 ? shelf.scrollLeft / max : 0;
+    bar.style.transform = `scaleX(${Math.max(0.04, p).toFixed(3)})`;
+    const box = shelf.getBoundingClientRect();
+    let first = 0;
+    cards.forEach((c, i) => {
+      const r = c.getBoundingClientRect();
+      if (!first && r.right > box.left + 40) first = i + 1;
+      if (reducedMotion.value) { c.style.transform = ''; return; }
+      // -1 at the left edge, 1 at the right edge of the shelf
+      const d = Math.max(-1, Math.min(1, ((r.left + r.width / 2) - (box.left + box.width / 2)) / box.width));
+      c.style.transform = `perspective(1200px) rotateY(${(-d * 7).toFixed(2)}deg) translateZ(${(-Math.abs(d) * 30).toFixed(1)}px)`;
+    });
+    count.textContent = `${String(first || 1).padStart(2, '0')} / ${total}`;
+    $('#reading-prev').disabled = shelf.scrollLeft <= 2;
+    $('#reading-next').disabled = shelf.scrollLeft >= max - 2;
+  };
+  const queue = () => { if (!raf) raf = requestAnimationFrame(update); };
+  shelf.addEventListener('scroll', queue, { passive: true });
+  window.addEventListener('resize', queue);
+  update();
+
+  // Drag to scroll with a mouse. Touch already scrolls natively.
+  let down = null;
+  let moved = false;
+  shelf.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    down = { x: e.clientX, left: shelf.scrollLeft };
+    moved = false;
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (!down) return;
+    const dx = e.clientX - down.x;
+    if (Math.abs(dx) > 4) { moved = true; shelf.classList.add('is-dragging'); }
+    shelf.scrollLeft = down.left - dx;
+  });
+  window.addEventListener('pointerup', () => {
+    if (!down) return;
+    down = null;
+    shelf.classList.remove('is-dragging');
+  });
+  // A drag should not open the article under the pointer.
+  shelf.addEventListener('click', (e) => { if (moved) { e.preventDefault(); moved = false; } }, true);
+}
+
+// Library: pointing at or focusing a book opens it; one open book per shelf.
+function initLibrary() {
+  document.querySelectorAll('.rack__books').forEach((rack) => {
+    const open = (vol) => {
+      if (!vol || vol.classList.contains('is-open')) return;
+      rack.querySelectorAll('.vol.is-open').forEach((v) => v.classList.remove('is-open'));
+      vol.classList.add('is-open');
+    };
+    rack.addEventListener('pointerover', (e) => { if (e.pointerType === 'mouse') open(e.target.closest('.vol')); });
+    rack.addEventListener('focusin', (e) => open(e.target.closest('.vol')));
+  });
+}
+
 function initReveals() {
   if (reducedMotion.value) {
     root.classList.add('reveals-done');
@@ -223,15 +346,17 @@ const CORE_STATES = {
   identity: { x: 0.74, y: -0.04, scale: 0.7, distort: 0.18, freq: 2.2,  shell: 0.34, spread: 1.3,  glow: 0.7, opacity: 0.7,  spin: 0.7 },
   skills:   { x: 0.56, y: 0.0,   scale: 1.02, distort: 0.2,  freq: 1.5,  shell: 0.3,  spread: 1.15, glow: 1.0, opacity: 0.95, spin: 0.6 },
   topics:   { x: -0.62, y: 0.04, scale: 0.9,  distort: 0.26, freq: 2.0,  shell: 0.24, spread: 1.4,  glow: 0.85, opacity: 0.8, spin: 0.45 },
+  reading:  { x: 0.0,  y: 0.62,  scale: 0.5,  distort: 0.3,  freq: 2.4,  shell: 0.2,  spread: 1.6,  glow: 0.8, opacity: 0.45, spin: 0.8 },
+  library:  { x: -0.66, y: 0.36, scale: 0.55, distort: 0.22, freq: 1.8, shell: 0.2,  spread: 1.3,  glow: 0.7, opacity: 0.4, spin: 0.4 },
   archive:  { x: -0.7, y: 0.25,  scale: 1.35, distort: 0.3,  freq: 1.6,  shell: 0.1,  spread: 1.6,  glow: 0.6, opacity: 0.14, spin: 0.5 },
   lab:      { x: 0.0,  y: 0.0,   scale: 0.62, distort: 0.55, freq: 3.2,  shell: 0.28, spread: 0.85, glow: 1.0, opacity: 0.3,  spin: 1.6 },
-  contact:  { x: 0.6,  y: 0.34,  scale: 0.52, distort: 0.08, freq: 1.0,  shell: 0.22, spread: 1.1,  glow: 0.8, opacity: 0.9,  spin: 0.3 },
+  contact:  { x: 0.62, y: 0.1,   scale: 0.62, distort: 0.08, freq: 1.0,  shell: 0.22, spread: 1.1,  glow: 0.6, opacity: 0.4,  spin: 0.3 },
 };
 
 function initCoreScroll() {
   if (!core) return;
   Object.assign(core.state, CORE_STATES.top);
-  const order = ['identity', 'skills', 'topics', 'archive', 'lab', 'contact'];
+  const order = ['identity', 'skills', 'topics', 'reading', 'library', 'archive', 'lab', 'contact'];
   order.forEach((id, i) => {
     const prev = i === 0 ? 'top' : order[i - 1];
     const el = document.getElementById(id);
@@ -290,11 +415,14 @@ async function loadCore(webgl) {
 function main() {
   renderContent();
   initTopicGlow();
+  initShelf();
+  initLibrary();
   initNav();
 
   const archive = initArchive();
   initTerminal({ openCase: (id) => archive.open(id), goTo });
   const field = initField({ reducedMotion });
+  initFalcon($('#falcon'), { reducedMotion });
 
   initPointer((nx, ny) => core?.setPointer(nx, ny));
 
