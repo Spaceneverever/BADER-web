@@ -488,6 +488,22 @@ main, .footer { position: relative; z-index: 10; }
   .book__a, .book__a::before, .book__go { transition: none; }
 }
 
+/* ── Falcon of light ───────────────────────────────────────── */
+.contact { position: relative; }
+.falcon {
+  position: absolute; z-index: 0;
+  right: var(--gutter); top: 50%;
+  width: clamp(280px, 34vw, 500px);
+  margin: 0;
+  transform: translateY(-46%);
+}
+.falcon__canvas { display: block; width: 100%; aspect-ratio: 1; touch-action: pan-y; }
+.falcon__cap { margin-top: 8px; text-align: right; font-size: 11px; letter-spacing: 0.16em; color: var(--text-dim); }
+.contact__title, .contact__body { position: relative; z-index: 1; }
+@media (max-width: 900px) {
+  .falcon { position: relative; right: auto; top: auto; transform: none; width: min(78vw, 340px); margin: 0 auto 32px; }
+}
+
 /* ── Contact email ─────────────────────────────────────────── */
 .contact__body:has(.channels[hidden]) { grid-template-columns: minmax(0, 1fr); }
 .contact__cta { gap: 22px; }

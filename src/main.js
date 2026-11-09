@@ -12,6 +12,7 @@ import { runBoot } from './modules/boot.js';
 import { initArchive } from './modules/archive.js';
 import { initTerminal } from './modules/terminal.js';
 import { initField } from './modules/field.js';
+import { initFalcon } from './modules/falcon.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -304,7 +305,7 @@ const CORE_STATES = {
   reading:  { x: 0.0,  y: 0.62,  scale: 0.5,  distort: 0.3,  freq: 2.4,  shell: 0.2,  spread: 1.6,  glow: 0.8, opacity: 0.45, spin: 0.8 },
   archive:  { x: -0.7, y: 0.25,  scale: 1.35, distort: 0.3,  freq: 1.6,  shell: 0.1,  spread: 1.6,  glow: 0.6, opacity: 0.14, spin: 0.5 },
   lab:      { x: 0.0,  y: 0.0,   scale: 0.62, distort: 0.55, freq: 3.2,  shell: 0.28, spread: 0.85, glow: 1.0, opacity: 0.3,  spin: 1.6 },
-  contact:  { x: 0.6,  y: 0.34,  scale: 0.52, distort: 0.08, freq: 1.0,  shell: 0.22, spread: 1.1,  glow: 0.8, opacity: 0.9,  spin: 0.3 },
+  contact:  { x: 0.62, y: 0.1,   scale: 0.62, distort: 0.08, freq: 1.0,  shell: 0.22, spread: 1.1,  glow: 0.6, opacity: 0.4,  spin: 0.3 },
 };
 
 function initCoreScroll() {
@@ -375,6 +376,7 @@ function main() {
   const archive = initArchive();
   initTerminal({ openCase: (id) => archive.open(id), goTo });
   const field = initField({ reducedMotion });
+  initFalcon($('#falcon'), { reducedMotion });
 
   initPointer((nx, ny) => core?.setPointer(nx, ny));
 
