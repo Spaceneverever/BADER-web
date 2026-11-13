@@ -47,6 +47,8 @@ export const profile = {
 // Contact channels. null = not configured yet (shown as PENDING, never a dead link).
 export const contact = {
   email: 'bader9292a@gmail.com',
+  // Shown under the email. tel uses the international form so it dials from anywhere.
+  phone: { label: '0553559296', tel: '+966553559296' },
   // Extra links shown under the email. Left empty on purpose: email is the one way in.
   channels: [],
 };

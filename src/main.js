@@ -155,6 +155,8 @@ function renderContent() {
     cta.innerHTML = `
       <p class="contact__label mono">Contact Email</p>
       <a class="contact__mail" href="mailto:${esc(contact.email)}">${esc(contact.email)}<span class="contact__arrow" aria-hidden="true">↗</span></a>
+      ${contact.phone ? `<p class="contact__label mono contact__label--phone">Mobile</p>
+      <a class="contact__phone" href="tel:${esc(contact.phone.tel)}" dir="ltr">${esc(contact.phone.label)}</a>` : ''}
       <div class="contact__row">
         <a class="btn btn--solid" href="mailto:${esc(contact.email)}">Send an email <span aria-hidden="true">→</span></a>
         <button type="button" class="btn" id="copy-email">Copy address</button>
